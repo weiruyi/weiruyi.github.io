@@ -1,5 +1,4 @@
-set -e
-pnpm run docs:build   
+set -e 
 git add -A
 git commit -m 'deploy'
 git push
