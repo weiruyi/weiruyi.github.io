@@ -1,5 +1,7 @@
 set -e
 
+pnpm run docs:build   
+
 # git init
 git add -A
 git commit -m 'deploy'
