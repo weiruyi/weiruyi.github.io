@@ -48,6 +48,11 @@ export default sidebar({
       text: "Markdown",
       icon: "/img/markdown.svg",
       link: "Markdown"
+    },
+    {
+      text: "Latex公式",
+      icon: "/img/latex.svg",
+      link: "latexMath"
     }
   ],
   "/posts/后端/": [
