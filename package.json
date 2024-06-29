@@ -10,7 +10,8 @@
     "docs:dev": "vuepress-vite dev src",
     "docs:update-package": "pnpm dlx vp-update",
     "docs:deploy-mac": " sh ./deploy_code.sh ",
-    "docs:deploy-win": " ./deploy_code.bat "
+    "docs:deploy-win": " ./deploy_code.bat ",
+    "docs:pull": " git pull "
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.9",
