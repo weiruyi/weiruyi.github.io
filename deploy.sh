@@ -7,5 +7,6 @@ git init
 git add -A
 git commit -m 'deploy'
 
+
 git push -f --set-upstream git@github.com:weiruyi/weiruyi.github.io.git main
 
