@@ -1,4 +1,4 @@
-{
+  {
   "name": "vuepress-theme-hope-template",
   "version": "2.0.0",
   "description": "A project of vuepress-theme-hope",
@@ -10,7 +10,7 @@
     "docs:dev": "vuepress-vite dev src",
     "docs:update-package": "pnpm dlx vp-update",
     "docs:deploy-mac": " sh ./deploy_code.sh ",
-    "docs:deploy-win": " ./deploy_code.bat ",
+    "docs:deploy-win": "deploy_code.bat ",
     "docs:pull": " git pull "
   },
   "devDependencies": {
