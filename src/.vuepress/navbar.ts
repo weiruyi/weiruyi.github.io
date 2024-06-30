@@ -48,6 +48,11 @@ export default navbar([
         text: "SpringCloud",
         icon: "/img/SpringCloud.svg",
         link: "springcloud/"
+      },
+      {
+        text: "ElasticSearch",
+        icon: "/img/es.svg",
+        link: "elasticSearch/"
       }
     ]
   },
@@ -102,6 +107,16 @@ export default navbar([
         prefix: "/posts/工具",
         children: [
           {
+            text: "Markdown",
+            icon: "/img/markdown.svg",
+            link: "Markdown"
+          },
+          {
+            text: "Latex公式",
+            icon: "/img/latex.svg",
+            link: "latexMath"
+          },
+          {
             text: "Git",
             icon: "/img/git.svg",
             link: "Git"
@@ -115,17 +130,12 @@ export default navbar([
             text: "Docker",
             icon: "/img/docker.svg",
             link: "Docker"
-          },
-          {
-            text: "Markdown",
-            icon: "/img/markdown.svg",
-            link: "Markdown"
-          },
-          {
-            text: "Latex公式",
-            icon: "/img/latex.svg",
-            link: "latexMath"
+          },{
+            text: "Kubernetes",
+            icon: "/img/k8s.svg",
+            link: "k8s"
           }
+       
         ]
       },
       {
