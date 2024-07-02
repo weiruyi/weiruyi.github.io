@@ -393,3 +393,398 @@ IK分词器如何拓展词条？如何停用词条？
 
 - 利用config目录的`IkAnalyzer.cfg.xml`文件添加拓展词典和停用词典
 - 在词典中添加拓展词条或者停用词条
+
+## 五、索引库操作
+
+Index就类似数据库表，Mapping映射就类似表的结构。我们要向es中存储数据，必须先创建Index和Mapping
+
+### 1、Mapping映射属性
+
+Mapping是对索引库中文档的约束，常见的Mapping属性包括：
+
+- `type`：字段数据类型，常见的简单类型有： 
+  - 字符串：`text`（可分词的文本）、`keyword`（精确值，例如：品牌、国家、ip地址）
+  - 数值：`long`、`integer`、`short`、`byte`、`double`、`float`、
+  - 布尔：`boolean`
+  - 日期：`date`
+  - 对象：`object`
+- `index`：是否创建索引，默认为`true`
+- `analyzer`：使用哪种分词器
+- `properties`：该字段的子字段
+
+例如下面的json文档：
+
+```JSON
+{
+    "age": 21,
+    "weight": 52.1,
+    "isMarried": false,
+    "info": "黑马程序员Java讲师",
+    "email": "zy@itcast.cn",
+    "score": [99.1, 99.5, 98.9],
+    "name": {
+        "firstName": "云",
+        "lastName": "赵"
+    }
+}
+```
+
+对应的每个字段映射（Mapping）：
+
+| **字段名** | **字段类型** | **类型说明**       | **是否参与搜索**   | **是否参与分词** | **分词器** |      |
+| :--------- | :----------- | :----------------- | :----------------- | :--------------- | :--------- | ---- |
+| age        | `integer`    | 整数               |                    |                  | ——         |      |
+| weight     | `float`      | 浮点数             |                    |                  | ——         |      |
+| isMarried  | `boolean`    | 布尔               |                    |                  | ——         |      |
+| info       | `text`       | 字符串，但需要分词 |                    |                  | IK         |      |
+| email      | `keyword`    | 字符串，但是不分词 |                    |                  | ——         |      |
+| score      | `float`      | 只看数组中元素类型 |                    |                  | ——         |      |
+| name       | firstName    | `keyword`          | 字符串，但是不分词 |                  |            | ——   |
+| lastName   | `keyword`    | 字符串，但是不分词 |                    |                  | ——         |      |
+
+### 2、索引库的CRUD
+
+由于Elasticsearch采用的是Restful风格的API，因此其请求方式和路径相对都比较规范，而且请求参数也都采用JSON风格。我们直接基于Kibana的DevTools来编写请求做测试，由于有语法提示，会非常方便。
+
+#### 1）创建索引库和映射
+
+**基本语法**：
+
+- 请求方式：`PUT`
+- 请求路径：`/索引库名`，可以自定义
+- 请求参数：`mapping`映射
+
+**格式**：
+
+```JSON
+PUT /索引库名称
+{
+  "mappings": {
+    "properties": {
+      "字段名":{
+        "type": "text",
+        "analyzer": "ik_smart"
+      },
+      "字段名2":{
+        "type": "keyword",
+        "index": "false"
+      },
+      "字段名3":{
+        "properties": {
+          "子字段": {
+            "type": "keyword"
+          }
+        }
+      },
+      // ...略
+    }
+  }
+}
+```
+
+**示例**：
+
+```JSON
+PUT /heima
+{
+  "mappings": {
+    "properties": {
+      "info":{
+        "type": "text",
+        "analyzer": "ik_smart"
+      },
+      "email":{
+        "type": "keyword",
+        "index": "false"
+      },
+      "name":{
+        "properties": {
+          "firstName": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### 2）查询索引库
+
+**基本语法**：
+
+-  请求方式：GET 
+-  请求路径：/索引库名 
+-  请求参数：无 
+
+**格式**：
+
+```Plain
+GET /索引库名
+```
+
+**示例**：
+
+```Plain
+GET /heima
+```
+
+#### 3）修改索引库
+
+倒排索引结构虽然不复杂，但是一旦数据结构改变（比如改变了分词器），就需要重新创建倒排索引，这简直是灾难。因此索引库**一旦创建，无法修改mapping**。
+
+虽然无法修改mapping中已有的字段，但是却允许添加新的字段到mapping中，因为不会对倒排索引产生影响。因此修改索引库能做的就是向索引库中添加新字段，或者更新索引库的基础属性。
+
+**语法说明**：
+
+```JSON
+PUT /索引库名/_mapping
+{
+  "properties": {
+    "新字段名":{
+      "type": "integer"
+    }
+  }
+}
+```
+
+**示例**：
+
+```JSON
+PUT /heima/_mapping
+{
+  "properties": {
+    "age":{
+      "type": "integer"
+    }
+  }
+}
+```
+
+#### 4）删除索引库
+
+**语法：**
+
+-  请求方式：DELETE 
+-  请求路径：/索引库名 
+-  请求参数：无 
+
+**格式：**
+
+```Plain
+DELETE /索引库名
+```
+
+示例：
+
+```Plain
+DELETE /heima
+```
+
+::: tip 总结
+
+- 创建索引库：PUT /索引库名
+- 查询索引库：GET /索引库名
+- 删除索引库：DELETE /索引库名
+- 修改索引库，添加字段：PUT /索引库名/_mapping
+
+:::
+
+可以看到，对索引库的操作基本遵循的Restful的风格，因此API接口非常统一，方便记忆。
+
+## 六、文档操作
+
+有了索引库，接下来就可以向索引库中添加数据了。Elasticsearch中的数据其实就是JSON风格的文档。操作文档自然保护`增`、`删`、`改`、`查`等几种常见操作。
+
+### 1、新增文档
+
+**语法：**
+
+```JSON
+POST /索引库名/_doc/文档id
+{
+    "字段1": "值1",
+    "字段2": "值2",
+    "字段3": {
+        "子属性1": "值3",
+        "子属性2": "值4"
+    },
+}
+```
+
+**示例：**
+
+```JSON
+POST /heima/_doc/1
+{
+    "info": "黑马程序员Java讲师",
+    "email": "zy@itcast.cn",
+    "name": {
+        "firstName": "云",
+        "lastName": "赵"
+    }
+}
+```
+
+### 2、查询文档
+
+根据rest风格，新增是post，查询应该是get，不过查询一般都需要条件，这里我们把文档id带上。
+
+**语法：**
+
+```JSON
+GET /{索引库名称}/_doc/{id}
+```
+
+**示例：**
+
+```JavaScript
+GET /heima/_doc/1
+```
+
+### 3、删除文档
+
+删除使用DELETE请求，同样，需要根据id进行删除：
+
+**语法：**
+
+```JavaScript
+DELETE /{索引库名}/_doc/id值
+```
+
+**示例：**
+
+```JSON
+DELETE /heima/_doc/1
+```
+
+### 4、修改文档
+
+::: tip 修改有两种方式：
+
+- 全量修改：直接覆盖原来的文档
+- 局部修改：修改文档中的部分字段
+
+:::
+
+#### 1）全量修改
+
+全量修改是覆盖原来的文档，其本质是两步操作：
+
+- 根据指定的id删除文档
+- 新增一个相同id的文档
+
+**注意**：如果根据id删除时，id不存在，第二步的新增也会执行，也就从修改变成了新增操作了。
+
+**语法：**
+
+```JSON
+PUT /{索引库名}/_doc/文档id
+{
+    "字段1": "值1",
+    "字段2": "值2",
+    // ... 略
+}
+```
+
+**示例：**
+
+```JSON
+PUT /heima/_doc/1
+{
+    "info": "黑马程序员高级Java讲师",
+    "email": "zy@itcast.cn",
+    "name": {
+        "firstName": "云",
+        "lastName": "赵"
+    }
+}
+```
+
+#### 2）局部修改
+
+局部修改是只修改指定id匹配的文档中的部分字段。
+
+**语法：**
+
+```JSON
+POST /{索引库名}/_update/文档id
+{
+    "doc": {
+         "字段名": "新的值",
+    }
+}
+```
+
+**示例：**
+
+```JSON
+POST /heima/_update/1
+{
+  "doc": {
+    "email": "ZhaoYun@itcast.cn"
+  }
+}
+```
+
+### 5、批处理
+
+批处理采用POST请求，基本语法如下：
+
+```Java
+POST _bulk
+{ "index" : { "_index" : "test", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_id" : "2" } }
+{ "create" : { "_index" : "test", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+```
+
+其中：
+
+- `index`代表新增操作
+  - `_index`：指定索引库名
+  - `_id`指定要操作的文档id
+  - `{ "field1" : "value1" }`：则是要新增的文档内容
+- `delete`代表删除操作
+  - `_index`：指定索引库名
+  - `_id`指定要操作的文档id
+- `update`代表更新操作
+  - `_index`：指定索引库名
+  - `_id`指定要操作的文档id
+  - `{ "doc" : {"field2" : "value2"} }`：要更新的文档字段
+
+示例，批量新增：
+
+```Java
+POST /_bulk
+{"index": {"_index":"heima", "_id": "3"}}
+{"info": "黑马程序员C++讲师", "email": "ww@itcast.cn", "name":{"firstName": "五", "lastName":"王"}}
+{"index": {"_index":"heima", "_id": "4"}}
+{"info": "黑马程序员前端讲师", "email": "zhangsan@itcast.cn", "name":{"firstName": "三", "lastName":"张"}}
+```
+
+批量删除：
+
+```Java
+POST /_bulk
+{"delete":{"_index":"heima", "_id": "3"}}
+{"delete":{"_index":"heima", "_id": "4"}}
+```
+
+::: tip 文档操作
+
+- 创建文档：`POST /{索引库名}/_doc/文档id   { json文档 }`
+- 查询文档：`GET /{索引库名}/_doc/文档id`
+- 删除文档：`DELETE /{索引库名}/_doc/文档id`
+- 修改文档： 
+  - 全量修改：`PUT /{索引库名}/_doc/文档id { json文档 }`
+  - 局部修改：`POST /{索引库名}/_update/文档id { "doc": {字段}}`
+
+:::
+
+## 七、JavaRestClient
+
+### 1、初始化RestClient
