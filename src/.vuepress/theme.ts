@@ -32,13 +32,10 @@ export default hopeTheme({
   blog: {
     description: "一个Java菜鸟",
     // intro: "/intro.html",
+    avatar: "/img/logo2.png",
     medias: {
       Github: "https://github.com/weiruyi",
       Gmail: "weiruyiowo@gmail.com",
-      VuePressThemeHope: [
-        "https://theme-hope.vuejs.press",
-        "https://theme-hope-assets.vuejs.press/logo.svg",
-      ],
     },
   },
 
