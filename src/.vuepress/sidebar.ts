@@ -4,7 +4,7 @@ export default sidebar({
   "/posts/数据库/": [
     {
       text: "SQL语句",
-      icon: "/img/hugeicons--sql.svg",
+      icon: "/img/SQL.svg",
       link: "SQL"
     }, {
       text: "MyBatis",

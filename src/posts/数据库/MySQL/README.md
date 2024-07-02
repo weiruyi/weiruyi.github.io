@@ -137,4 +137,4 @@ Mixed-format Replication(MBR)，MySQL NDB cluster 7.3 和7.4 使用的MBR。
 
 ## 参考：
 
-[1]https://blog.csdn.net/weixin_44729138/article/details/115311756
+[1] [https://blog.csdn.net/weixin_44729138/article/details/115311756](https://blog.csdn.net/weixin_44729138/article/details/115311756)

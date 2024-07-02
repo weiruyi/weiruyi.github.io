@@ -31,7 +31,7 @@ export default navbar([
   },
   {
     text: "后端",
-    icon: "/img/后端开发.svg",
+    icon: "/img/spring.svg",
     prefix: "/posts/后端/",
     children: [
       {
@@ -64,7 +64,7 @@ export default navbar([
     children: [
       {
         text: "SQL语句",
-        icon: "/img/hugeicons--sql.svg",
+        icon: "/img/SQL.svg",
         link: "SQL"
       },
       {
