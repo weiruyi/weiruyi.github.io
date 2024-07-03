@@ -46,5 +46,61 @@ highlights:
         details: 项目复盘、知识点总结、阶段性总结
         link: ./skytakeout/
 
+
+  - header: 黑马头条
+    description: 黑马头条
+    image: /img/toutiao.jpg
+    bgImage: https://theme-hope-assets.vuejs.press/bg/3-light.svg
+    bgImageDark: https://theme-hope-assets.vuejs.press/bg/3-dark.svg
+    highlights:
+      - title: 📦️ 仓库地址
+        details: Springboot、Springcloud（Nacos、Feign、GateWay）、Redis、xxl-job、MySQL、FastDFS、 ElasticSearch、Kafka、KafkaStream、MyBatis、Seata、SkyWalking、jenkins等
+        link: 
+
+      - title: 🎥 视频地址
+        details: B站视频
+        link: https://www.bilibili.com/video/BV1Qs4y1v7x4?p=1&vd_source=80162809c800d9d3f638b9ee4096e6d6
+
+      - title: 📑 项目介绍
+        details: 功能数量、页面数量、接口数量、解决方案
+        link: ./heimaLeadnews/
+
+      - title: 📖 产品文档
+        details: 背景介绍、环境搭建、修复BUG、测试部署
+        link: ./heimaLeadnews/
+
+      - title: 💡 复习笔记
+        details: 项目复盘、知识点总结、阶段性总结
+        link: ./heimaLeadnews/
+
+  - header: 学成在线
+    description: 学成在线
+    image: /img/studyOnline.jpg
+    bgImage: https://theme-hope-assets.vuejs.press/bg/4-light.svg
+    bgImageDark: https://theme-hope-assets.vuejs.press/bg/4-dark.svg
+    highlights:
+      - title: 📦️ 仓库地址
+        details: SpringBoot+SpringCloud+MyBatisPlus+MySQL+Redis+Eureka+RabbitMQ
+        link: 
+
+      - title: 🎥 视频地址
+        details: B站视频
+        link: https://www.bilibili.com/video/BV1j8411N7Bm/?spm_id_from=333.999.0.0&vd_source=80162809c800d9d3f638b9ee4096e6d6
+
+      - title: 📑 项目介绍
+        details: 功能数量、页面数量、接口数量、解决方案
+        link: ./studyOnline/
+
+      - title: 📖 产品文档
+        details: 背景介绍、环境搭建、修复BUG、测试部署
+        link: ./studyOnline/
+
+      - title: 💡 复习笔记
+        details: 项目复盘、知识点总结、阶段性总结
+        link: ./studyOnline/
 ---
+
+
+
+
 
