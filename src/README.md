@@ -7,7 +7,7 @@ heroText: Lance
 bgImage: "/img/background.jpg"
 # heroImage: 
 heroFullScreen: true
-tagline: Just Do It
+tagline: JUST DO IT
 projects:
   - icon: /img/书籍.svg
     name: JavaGuide
