@@ -12,7 +12,7 @@ export default hopeTheme({
 
   iconAssets: "fontawesome-with-brands",
 
-  logo: "/img/logo2.png",
+  logo: "/logo.svg",
 
   repo: "weiruyi",
 
@@ -32,7 +32,7 @@ export default hopeTheme({
   blog: {
     description: "一个Java菜鸟",
     // intro: "/intro.html",
-    avatar: "/img/logo2.png",
+    avatar: "/logo.svg",
     medias: {
       Github: "https://github.com/weiruyi",
       Gmail: "weiruyiowo@gmail.com",
