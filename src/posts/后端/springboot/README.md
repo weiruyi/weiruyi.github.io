@@ -4,6 +4,7 @@ date: 2024-06-22
 tags: Spring
 category: Spring
 order: 1
+icon: "/img/spring.svg"
 ---
 
 <!--more--->

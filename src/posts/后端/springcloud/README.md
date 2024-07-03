@@ -4,6 +4,7 @@ date: 2024-06-20
 tags: SpringCloud
 category: SpringCloud
 order: 1
+icon: "/img/SpringCloud.svg"
 ---
 
 <!--more--->

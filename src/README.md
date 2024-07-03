@@ -1,7 +1,7 @@
 ---
 home: true
 layout: BlogHome
-icon: home
+icon: "/img/home.svg"
 title: HOME
 heroText: Lance
 bgImage: "/img/background.jpg"

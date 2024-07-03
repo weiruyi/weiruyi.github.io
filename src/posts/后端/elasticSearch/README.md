@@ -4,6 +4,7 @@ date: 2024-06-30
 tags: ElasticSearch
 category: ElasticSearch
 order: 1
+icon: "/img/es.svg"
 ---
 
 <!--more--->

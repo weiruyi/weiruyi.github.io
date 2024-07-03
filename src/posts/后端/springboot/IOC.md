@@ -5,6 +5,7 @@ tags: Spring
 category: Spring
 description: spring
 order: 1
+icon: "/img/spring.svg"
 ---
 
 <!--more--->

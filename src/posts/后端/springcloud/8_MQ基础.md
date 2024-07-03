@@ -4,6 +4,7 @@ date: 2024-06-27 11:19:00
 tags: SpringCloud
 category: SpringCloud
 order: 8
+icon: "/img/rabbitmq.svg"
 ---
 
 <!--more--->
