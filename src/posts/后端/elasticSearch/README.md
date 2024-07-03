@@ -1,15 +1,15 @@
 ---
-title: ElasticSearch
+title: ELK
 date: 2024-06-30
 tags: ElasticSearch
 category: ElasticSearch
 order: 1
-icon: "/img/es.svg"
+icon: "/img/Elastic.svg"
 ---
 
 <!--more--->
 
-# ElasticSearch
+# ELK
 
 ## 一、介绍
 

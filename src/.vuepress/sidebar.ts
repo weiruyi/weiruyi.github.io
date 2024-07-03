@@ -80,8 +80,8 @@ export default sidebar({
       children: "structure"
     },
     {
-      text: "ElasticSearch",
-      icon: "/img/es.svg",
+      text: "ELK",
+      icon: "/img/Elastic.svg",
       prefix: "elasticSearch",
       children: "structure"
     }

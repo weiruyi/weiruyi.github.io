@@ -50,8 +50,8 @@ export default navbar([
         link: "springcloud/"
       },
       {
-        text: "ElasticSearch",
-        icon: "/img/es.svg",
+        text: "ELK",
+        icon: "/img/Elastic.svg",
         link: "elasticSearch/"
       }
     ]
