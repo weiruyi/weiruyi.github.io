@@ -3,6 +3,7 @@ title: 学成在线
 date: 2024-06-5 16:24:22
 tags: 项目
 category: 项目
+icon: "/img/教育.svg"
 ---
 
 <!--more--->

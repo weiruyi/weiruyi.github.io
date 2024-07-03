@@ -121,9 +121,21 @@ export default sidebar({
   ],
   "/posts/项目/": [
     {
-      text: "项目",
-      icon: "/img/PROJECT.svg",
-      prefix: "",
+      text: "苍穹外卖",
+      icon: "/img/外卖.svg",
+      prefix: "skytakeout",
+      children: "structure"
+    },
+    {
+      text: "黑马头条",
+      icon: "/img/头条.svg",
+      prefix: "heimaLeadnews",
+      children: "structure"
+    },
+    {
+      text: "学成在线",
+      icon: "/img/教育.svg",
+      prefix: "studyOnline",
       children: "structure"
     }
   ],
