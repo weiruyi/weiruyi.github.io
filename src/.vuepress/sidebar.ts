@@ -127,6 +127,12 @@ export default sidebar({
       children: "structure"
     },
     {
+      text: "黑马商城",
+      icon: "/img/商城.svg",
+      prefix: "hmall",
+      children: "structure"
+    },
+    {
       text: "黑马头条",
       icon: "/img/头条.svg",
       prefix: "heimaLeadnews",
