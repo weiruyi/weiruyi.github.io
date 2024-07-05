@@ -1,5 +1,5 @@
 ---
-title: ElasticSearch与MySQL数据同步
+title: ES与MySQL数据同步
 date: 2024-07-05
 tags: ElasticSearch
 category: ElasticSearch
@@ -9,7 +9,7 @@ icon: "/img/mysql.svg"
 
 <!--more--->
 
-# ElasticSearch与MySQL数据同步
+# ES与MySQL数据同步
 
  在实际项目开发中，常用Mysql作为业务数据库，ElasticSearch作为查询库。ElasticSearch主要用来应对海量数据的复杂查询，提高查询效率和缓解Mysql数据库的压力。如何实现 MySQL 数据库和ElasticSearch之间的数据同步也是为非常关键的，下面介绍几种常见的数据同步方案方案。
 
