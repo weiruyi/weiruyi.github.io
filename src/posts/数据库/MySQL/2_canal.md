@@ -21,7 +21,7 @@ canal，译意为水道/管道/沟渠，主要用途是基于 **MySQL 数据库�
 
 canal是阿里巴巴开源的MySQL binlog 增量订阅&消费组件。它的原理是伪装成MySQL的从库来监听主库的binlog。因此，我们可以使用canal+MQ的方式把更新数据库和删除缓存进行解耦，同时还可以使用这种方式进行MySQL主从复制以及ES和MySQL的数据同步。
 
-### 工作原理
+### 1、工作原理
 
 **MySQL主备复制原理**
 
@@ -34,6 +34,22 @@ canal是阿里巴巴开源的MySQL binlog 增量订阅&消费组件。它的原�
 - canal 模拟 MySQL slave 的交互协议，伪装自己为 MySQL slave ，向 MySQL master 发送dump 协议
 - MySQL master 收到 dump 请求，开始推送 binary log 给 slave (即 canal )
 - canal 解析 binary log 对象(原始为 byte 流)
+
+### 2、canal能做什么
+
+以下参考[canal官网](https://github.com/alibaba/canal)。与其问canal能做什么，不如说数据同步有什么作用。
+
+但是canal的数据同步**不是全量的，而是增量**，基于binary log增量订阅和消费。
+
+::: tip canal可以做：
+
+- 数据库镜像
+- 数据库实时备份
+- 索引构建和实时维护
+- 业务cache(缓存)刷新
+- 带业务逻辑的增量数据处理
+
+:::
 
 ## 二、环境搭建
 
@@ -119,11 +135,9 @@ canal.instance.dbUsername=canal
 canal.instance.dbPassword=canal
 ```
 
+之后启动canal容器
 
-
-
-
-```
+```bash
 docker run --name canal -p 11111:11111 \
 -v /root/canal/conf/example/instance.properties:/home/admin/canal-server/conf/example/instance.properties \
 -v /root/canal/conf/canal.properties:/home/admin/canal-server/conf/canal.properties \
@@ -131,298 +145,59 @@ docker run --name canal -p 11111:11111 \
 --network hm-net -d canal/canal-server:v1.1.5
 ```
 
-```
-#################################################
-## mysql serverId , v1.0.26+ will autoGen
-canal.instance.mysql.slaveId= 20
+验证是否启动成功
 
-# enable gtid use true/false
-canal.instance.gtidon=false
-
-# position info
-canal.instance.master.address=mysql:3306
-canal.instance.master.journal.name=
-canal.instance.master.position=
-canal.instance.master.timestamp=
-canal.instance.master.gtid=
-
-# rds oss binlog
-canal.instance.rds.accesskey=
-canal.instance.rds.secretkey=
-canal.instance.rds.instanceId=
-
-# table meta tsdb info
-canal.instance.tsdb.enable=true
-#canal.instance.tsdb.url=jdbc:mysql://127.0.0.1:3306/canal_tsdb
-#canal.instance.tsdb.dbUsername=canal
-#canal.instance.tsdb.dbPassword=canal
-
-#canal.instance.standby.address =
-#canal.instance.standby.journal.name =
-#canal.instance.standby.position =
-#canal.instance.standby.timestamp =
-#canal.instance.standby.gtid=
-
-# username/password
-canal.instance.dbUsername=canal
-canal.instance.dbPassword=canal
-canal.instance.connectionCharset = UTF-8
-# enable druid Decrypt database password
-canal.instance.enableDruid=false
-#canal.instance.pwdPublicKey=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALK4BUxdDltRRE5/zXpVEVPUgunvscYFtEip3pmLlhrWpacX7y7GCMo2/JM6LeHmiiNdH1FWgGCpUfircSwlWKUCAwEAAQ==
-
-# table regex
-# canal.instance.filter.regex=.*\\..*
-canal.instance.filter.regex=hm-item\\..*
-# table black regex
-canal.instance.filter.black.regex=mysql\\.slave_.*
-# table field filter(format: schema1.tableName1:field1/field2,schema2.tableName2:field1/field2)
-#canal.instance.filter.field=test1.t_product:id/subject/keywords,test2.t_company:id/name/contact/ch
-# table field black filter(format: schema1.tableName1:field1/field2,schema2.tableName2:field1/field2)
-#canal.instance.filter.black.field=test1.t_product:subject/product_image,test2.t_company:id/name/contact/ch
-
-# mq config
-canal.mq.topic=example
-# dynamic topic route by schema or table regex
-#canal.mq.dynamicTopic=mytest1.user,mytest2\\..*,.*\\..*
-canal.mq.partition=0
-# hash partition config
-#canal.mq.partitionsNum=3
-#canal.mq.partitionHash=test.table:id^name,.*\\..*
-#canal.mq.dynamicTopicPartitionNum=test.*:4,mycanal:6
-#################################################
-
+```bash
+docker exec -it canal bash
+cd canal-server/logs/example/
+tail -100f example.log  // 查看日志
 ```
 
+### 3、TCP模式
 
+从配置文件`canal/conf/canal.properties`中可以发现，canal默认模式为TCP模式，在TCP模式下可以使用客户端来接收
 
 ```
-#################################################
-######### 		common argument		#############
-#################################################
-# tcp bind ip
-canal.ip =
-# register ip to zookeeper
-canal.register.ip =
-canal.port = 11111
-canal.metrics.pull.port = 11112
-# canal instance user/passwd
-# canal.user = canal
-# canal.passwd = E3619321C1A937C46A0D8BD1DAC39F93B27D4458
-
-# canal admin config
-#canal.admin.manager = 127.0.0.1:8089
-canal.admin.port = 11110
-canal.admin.user = admin
-canal.admin.passwd = 4ACFE3202A5FF5CF467898FC58AAB1D615029441
-# admin auto register
-#canal.admin.register.auto = true
-#canal.admin.register.cluster =
-#canal.admin.register.name =
-
-canal.zkServers =
-# flush data to zk
-canal.zookeeper.flush.period = 1000
-canal.withoutNetty = false
 # tcp, kafka, rocketMQ, rabbitMQ
-canal.serverMode = rabbitMQ
-# flush meta cursor/parse position to file
-canal.file.data.dir = ${canal.conf.dir}
-canal.file.flush.period = 1000
-## memory store RingBuffer size, should be Math.pow(2,n)
-canal.instance.memory.buffer.size = 16384
-## memory store RingBuffer used memory unit size , default 1kb
-canal.instance.memory.buffer.memunit = 1024 
-## meory store gets mode used MEMSIZE or ITEMSIZE
-canal.instance.memory.batch.mode = MEMSIZE
-canal.instance.memory.rawEntry = true
-
-## detecing config
-canal.instance.detecting.enable = false
-#canal.instance.detecting.sql = insert into retl.xdual values(1,now()) on duplicate key update x=now()
-canal.instance.detecting.sql = select 1
-canal.instance.detecting.interval.time = 3
-canal.instance.detecting.retry.threshold = 3
-canal.instance.detecting.heartbeatHaEnable = false
-
-# support maximum transaction size, more than the size of the transaction will be cut into multiple transactions delivery
-canal.instance.transaction.size =  1024
-# mysql fallback connected to new master should fallback times
-canal.instance.fallbackIntervalInSeconds = 60
-
-# network config
-canal.instance.network.receiveBufferSize = 16384
-canal.instance.network.sendBufferSize = 16384
-canal.instance.network.soTimeout = 30
-
-# binlog filter config
-canal.instance.filter.druid.ddl = true
-canal.instance.filter.query.dcl = false
-canal.instance.filter.query.dml = false
-canal.instance.filter.query.ddl = false
-canal.instance.filter.table.error = false
-canal.instance.filter.rows = false
-canal.instance.filter.transaction.entry = false
-canal.instance.filter.dml.insert = false
-canal.instance.filter.dml.update = false
-canal.instance.filter.dml.delete = false
-
-# binlog format/image check
-canal.instance.binlog.format = ROW,STATEMENT,MIXED 
-canal.instance.binlog.image = FULL,MINIMAL,NOBLOB
-
-# binlog ddl isolation
-canal.instance.get.ddl.isolation = false
-
-# parallel parser config
-canal.instance.parser.parallel = true
-## concurrent thread number, default 60% available processors, suggest not to exceed Runtime.getRuntime().availableProcessors()
-#canal.instance.parser.parallelThreadSize = 16
-## disruptor ringbuffer size, must be power of 2
-canal.instance.parser.parallelBufferSize = 256
-
-# table meta tsdb info
-canal.instance.tsdb.enable = true
-canal.instance.tsdb.dir = ${canal.file.data.dir:../conf}/${canal.instance.destination:}
-canal.instance.tsdb.url = jdbc:h2:${canal.instance.tsdb.dir}/h2;CACHE_SIZE=1000;MODE=MYSQL;
-canal.instance.tsdb.dbUsername = canal
-canal.instance.tsdb.dbPassword = canal
-# dump snapshot interval, default 24 hour
-canal.instance.tsdb.snapshot.interval = 24
-# purge snapshot expire , default 360 hour(15 days)
-canal.instance.tsdb.snapshot.expire = 360
-
-#################################################
-######### 		destinations		#############
-#################################################
-canal.destinations = example
-# conf root dir
-canal.conf.dir = ../conf
-# auto scan instance dir add/remove and start/stop instance
-canal.auto.scan = true
-canal.auto.scan.interval = 5
-# set this value to 'true' means that when binlog pos not found, skip to latest.
-# WARN: pls keep 'false' in production env, or if you know what you want.
-canal.auto.reset.latest.pos.mode = false
-
-canal.instance.tsdb.spring.xml = classpath:spring/tsdb/h2-tsdb.xml
-#canal.instance.tsdb.spring.xml = classpath:spring/tsdb/mysql-tsdb.xml
-
-canal.instance.global.mode = spring
-canal.instance.global.lazy = false
-canal.instance.global.manager.address = ${canal.admin.manager}
-#canal.instance.global.spring.xml = classpath:spring/memory-instance.xml
-canal.instance.global.spring.xml = classpath:spring/file-instance.xml
-#canal.instance.global.spring.xml = classpath:spring/default-instance.xml
-
-##################################################
-######### 	      MQ Properties      #############
-##################################################
-# aliyun ak/sk , support rds/mq
-canal.aliyun.accessKey =
-canal.aliyun.secretKey =
-canal.aliyun.uid=
-
-canal.mq.flatMessage = true
-canal.mq.canalBatchSize = 50
-canal.mq.canalGetTimeout = 100
-# Set this value to "cloud", if you want open message trace feature in aliyun.
-canal.mq.accessChannel = local
-
-canal.mq.database.hash = true
-canal.mq.send.thread.size = 30
-canal.mq.build.thread.size = 8
-
-##################################################
-######### 		     Kafka 		     #############
-##################################################
-kafka.bootstrap.servers = 127.0.0.1:9092
-kafka.acks = all
-kafka.compression.type = none
-kafka.batch.size = 16384
-kafka.linger.ms = 1
-kafka.max.request.size = 1048576
-kafka.buffer.memory = 33554432
-kafka.max.in.flight.requests.per.connection = 1
-kafka.retries = 0
-
-kafka.kerberos.enable = false
-kafka.kerberos.krb5.file = "../conf/kerberos/krb5.conf"
-kafka.kerberos.jaas.file = "../conf/kerberos/jaas.conf"
-
-##################################################
-######### 		    RocketMQ	     #############
-##################################################
-rocketmq.producer.group = test
-rocketmq.enable.message.trace = false
-rocketmq.customized.trace.topic =
-rocketmq.namespace =
-rocketmq.namesrv.addr = 127.0.0.1:9876
-rocketmq.retry.times.when.send.failed = 0
-rocketmq.vip.channel.enabled = false
-rocketmq.tag = 
-
-##################################################
-######### 		    RabbitMQ	     #############
-##################################################
-rabbitmq.host = 192.168.175.129
-rabbitmq.virtual.host = /hmall
-rabbitmq.exchange = canal.direct
-rabbitmq.username = hmall
-rabbitmq.password = 123
-rabbitmq.deliveryMode = 
+canal.serverMode = tcp
 ```
 
+以Java客户端为例，首先需要引入依赖：
+
+```xml
+<dependency>
+    <groupId>com.alibaba.otter</groupId>
+    <artifactId>canal.client</artifactId>
+    <version>1.1.0</version>
+</dependency>
 ```
-package com.hmall.search;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.otter.canal.client.CanalConnector;
-import com.alibaba.otter.canal.client.CanalConnectors;
-import com.alibaba.otter.canal.protocol.CanalEntry;
-import com.alibaba.otter.canal.protocol.CanalEntry.*;
-import com.alibaba.otter.canal.protocol.Message;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-import org.junit.jupiter.api.Test;
-import org.springframework.stereotype.Component;
+Client代码:
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-import java.net.InetSocketAddress;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+其中每次获取的entity的结构如图所示：
 
+![](/image\mysql\mysql2.png)
 
+对数据的解析代码如下，还可以参考官网给出的一些开源解析工具
+
+```
 public class CanalClient {
-
     //sql队列
     private Queue<String> SQL_QUEUE = new ConcurrentLinkedQueue<>();
 
-    @Resource
-    private DataSource dataSource;
-
-    /**
-     * canal入库方法
-     */
     @Test
     public void run() throws InterruptedException, InvalidProtocolBufferException {
-
+				//获取连接
         CanalConnector connector = CanalConnectors.newSingleConnector(new InetSocketAddress("192.168.175.129",
                 11111), "example", "", "");
+        //每次抓取的数据量，不足的话也不会阻塞，有多少读多少
         int batchSize = 10;
-        int emptyCount = 0;
         while(true){
             connector.connect();
-            connector.subscribe("hm-item.*");
-            Message message = connector.get(batchSize);
-            List<Entry> entries = message.getEntries();
-
-            if(entries.size() <= 0){
+            connector.subscribe("hm-item.*"); // 订阅的数据库表
+            Message message = connector.get(batchSize); //获取数据
+            List<Entry> entries = message.getEntries();   //获取entity集合
+            if(entries.size() <= 0){ 
 //                System.out.println("当次抓取没有数据");
                 Thread.sleep(10000);
             }else {
@@ -433,12 +208,14 @@ public class CanalClient {
                     EntryType entryType = entry.getEntryType();
                     //获取序列化后的数据
                     ByteString storeValue = entry.getStoreValue();
-                    //
+                    //判断当前entryType是否为rawData
                     if(EntryType.ROWDATA.equals(entryType)){
-                        RowChange rowChange = RowChange.parseFrom(storeValue);
-                        EventType eventType = rowChange.getEventType();
-                        List<RowData> rowDatasList = rowChange.getRowDatasList();
+                        RowChange rowChange = RowChange.parseFrom(storeValue);  //反序列化数据
+                        EventType eventType = rowChange.getEventType(); //获取当前事件的操作类型
+                        //获取数据集（一个SQL可能改变多行数据）
+                        List<RowData> rowDatasList = rowChange.getRowDatasList(); 
                         for (RowData rowData : rowDatasList) {
+                        		//获取改变前的数据以及改变后的数据
                             JSONObject beforeData = new JSONObject();
                             List<Column> beforeColumnsList = rowData.getBeforeColumnsList();
                             for (Column column : beforeColumnsList) {
@@ -449,7 +226,7 @@ public class CanalClient {
                             for (Column column : afterColumnsList) {
                                 afterData.put(column.getName(), column.getValue());
                             }
-
+														//打印数据
                             System.out.println("===============================");
                             System.out.println("table:" + tableName+",eventType:"+eventType);
                             System.out.println("beforeData:"+beforeData);
@@ -462,28 +239,45 @@ public class CanalClient {
                 }
             }
         }
-
-
-
     }
-
-
 }
-
 ```
 
+获取到数据后就可以进行下一步同步操作。
 
+### 4、RabbitMQ模式
+
+canal 作为 MySQL binlog 增量获取和解析工具，可将变更记录投递到 MQ 系统中，比如 Kafka/RocketMQ，可以借助于 MQ 的多语言能力。
+
+1）修改配置文件`canal/conf/canal.properties`
 
 ```
-docker exec -it [c_id]/bin/bash
-cd canal-server/bin/
-./start.sh  // 启动服务
-cd canal-server/logs/example/
-tail -100f example.log  // 查看日志
+# tcp, kafka, rocketMQ, rabbitMQ
+canal.serverMode = rabbitMQ //1、模式修改为rabbitMQ
 
+// 2、修改rabbitmq配置信息
+##################################################
+######### 		    RabbitMQ	     #############
+##################################################
+rabbitmq.host = 192.168.175.129
+rabbitmq.virtual.host = /hmall
+rabbitmq.exchange = canal.direct
+rabbitmq.username = hmall
+rabbitmq.password = 123
+rabbitmq.deliveryMode = 
 ```
 
-![](/image\mysql\mysql2.png)
+2）修改配置文件`canal/conf/example/instance.properties`
+
+```
+# table regex
+canal.instance.filter.regex=hm-item\\..*  //1、修改过滤规则，只监听hm-item数据库
+
+# mq config
+canal.mq.topic=example  //2、设置mq的routing-key，必须和mq中设置的相同
+```
+
+在mq中创建对应的交换机和队列，重新启动canal并测试发现mq成功收到更新信息，后续可以使用mq消费者进行同步操作。
 
 # 参考：
 
