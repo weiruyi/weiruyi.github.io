@@ -185,6 +185,9 @@ docker container ps/ls -a
 # 删除容器
 docker container rm 94....
 docker rm 94
+
+#进入容器
+docker exec -it 容器名 bash
 ```
 
 多容器操作

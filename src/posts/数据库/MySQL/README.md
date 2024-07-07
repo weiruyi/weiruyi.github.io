@@ -3,6 +3,8 @@ title: MySQL主从同步
 date: 2024-06-11 16:24:22
 tags: 数据库
 category: 八股
+icon: "/img/mysql.svg"
+order: 1
 ---
 
 <!--more--->
