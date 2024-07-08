@@ -2,7 +2,9 @@
 title: ES与MySQL数据同步
 date: 2024-07-05
 tags: ElasticSearch
-category: ElasticSearch
+category:
+  - ElasticSearch
+  - 数据同步
 order: 4
 icon: "/img/mysql.svg"
 ---

@@ -11,7 +11,7 @@
     "docs:update-package": "pnpm dlx vp-update",
     "docs:deploy-mac": " sh ./deploy_code.sh ",
     "docs:deploy-win": "deploy_code.bat ",
-    "docs:pull": " git pull "
+    "docs:pull": " git pull main "
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.9",

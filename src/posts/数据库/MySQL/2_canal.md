@@ -2,7 +2,10 @@
 title: Canal数据同步
 date: 2024-07-07 16:24:22
 tags: 数据库
-category: 八股
+category: 
+  - 数据库
+  - 数据同步
+  - ElasticSearch
 icon: "/img/数据同步.svg"
 order: 2
 ---
