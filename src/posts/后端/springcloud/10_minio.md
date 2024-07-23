@@ -14,3 +14,352 @@ icon: "/img/MinIO.svg"
 ## 一、分布式文件系统
 
 ### 1、文件系统
+
+文件系统是负责管理和存储文件的系统软件，操作系统通过文件系统提供的接口去存取文件，用户通过操作系统访问磁盘上的文件。
+
+下图指示了文件系统所处的位置：
+
+![](/image/cloud/cloud41.png)
+
+在已知的操作系统中，它们分别支持多种不同的文件系统。Windows 下支持 FAT、FAT32、NTFS，Linux 支持十多种的文件系统，例如：EXT2、EXT3、EXT4、NFS、NTFS等。
+
+::: info 问题？
+
+一此短视频平台拥有大量的视频、图片，这些视频文件、图片文件该如何存储呢？如何存储可以满足互联网上海量用户的浏览。
+
+:::
+
+通过概念可以简单理解为：一个计算机无法存储海量的文件，通过网络将若干计算机组织起来共同去存储海量的文件，去接收海量用户的请求，这些组织起来的计算机通过网络进行通信，如下图：
+
+![](/image/cloud/cloud42.png)
+
+:::tip 好处：
+
+ 1、一台计算机的文件系统处理能力扩充到多台计算机同时处理。
+
+ 2、一台计算机挂了还有另外副本计算机提供数据。
+
+ 3、每台计算机可以放在不同的地域，这样用户就可以就近访问，提高访问速度。
+
+:::
+
+### 2、分布式文件系统
+
+#### 1）NFS
+
+网络文件系统（NFS）是文件系统之上的一个网络抽象，来允许远程客户端以与本地文件系统类似的方式，来通过网络进行访问。虽然 NFS 不是第一个此类系统，但是它已经发展并演变成 UNIX系统中最强大最广泛使用的网络文件系统。NFS 允许在多个用户之间共享公共文件系统，并提供数据集中的优势，来最小化所需的存储空间。
+
+![](/image/cloud/cloud43.png)
+
+::: important 特点：
+
+- 在客户端上映射NFS服务器的驱动器。
+
+- 客户端通过网络访问NFS服务器的硬盘完全透明。
+
+:::
+
+#### 2）GFS
+
+GFS是一个可扩展的分布式文件系统，用于大型的、分布式的、对人量数据进行访问的应用。它运行于廉价的普通硬件上。可以提供容错功能。它可以给大量的用户提供总体性能较高的服务。
+
+![](/image/cloud/cloud44.png)
+
+::: important
+
+- GFS采用主从结构，一个GFS集群由一个master和大量的chunkserver组成。
+
+- master存储了数据文件的元数据，一个文件被分成了若干块存储在多个chunkserver中。
+
+- 用户从master中获取数据元信息，向chunkserver存储数据。
+
+:::
+
+#### 3）HDFS
+
+HDFS，是Hadoop Distributed File System的简称，是Hadoop抽象文件系统的一种实现。HDFS是一个高度容错性的系统，适合部署在廉价的机器上。HDFS能提供高吞吐量的数据访问，非常适合大规模数据集上的应用。 HDFS的文件分布在集群机器上，同时提供副本进行容错及可靠性保证。例如客户端写入读取文件的直接操作都是分布在集群各个机器上的，没有单点性能压力。
+
+下图是HDFS的架构图：
+
+![](/image/cloud/cloud45.png)
+
+::: important
+
+- HDFS采用主从结构，一个HDFS集群由一个名称结点和若干数据结点组成。
+
+- 名称结点存储数据的元信息，一个完整的数据文件分成若干块存储在数据结点。
+
+- 客户端从名称结点获取数据的元信息及数据分块的信息，得到信息客户端即可从数据块来存取数据。
+
+:::
+
+#### 4）云计算厂家
+
+- 阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务。其数据设计持久性不低于 99.9999999999%（12 个 9），服务设计可用性（或业务连续性）不低于 99.995%。[官方网站](https://www.aliyun.com/product/oss )
+
+- 百度对象存储BOS提供稳定、安全、高效、高可扩展的云存储服务。您可以将任意数量和形式的非结构化数据存入BOS，并对数据进行管理和处理。BOS支持标准、低频、冷和归档存储等多种存储类型，满足多场景的存储需求。 [官方网站](https://cloud.baidu.com/product/bos.html ) 
+
+## 二、MinIO
+
+### 1、介绍
+
+MinIO 是一个非常轻量的服务,可以很简单的和其他应用的结合使用，它兼容亚马逊 S3 云存储服务接口，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等。
+
+它一大特点就是轻量，使用简单，功能强大，支持各种平台，单个文件最大5TB，兼容 Amazon S3接口，提供了 Java、Python、GO等多版本SDK支持。
+
+- [官网](https://min.io)
+
+- [中文](https://www.minio.org.cn/)
+
+MinIO集群采用去中心化共享架构，每个结点是对等关系，通过Nginx可对MinIO进行负载均衡访问。
+
+**去中心化有什么好处？**
+
+在大数据领域，通常的设计理念都是无中心和分布式。Minio分布式模式可以帮助你搭建一个高可用的对象存储服务，你可以使用这些存储设备，而不用考虑其真实物理位置。
+
+它将分布在不同服务器上的多块硬盘组成一个对象存储服务。由于硬盘分布在不同的节点上，分布式Minio避免了单点故障。如下图：
+
+![](/image/cloud/cloud46.png)
+
+Minio使用纠删码技术来保护数据，它是一种恢复丢失和损坏数据的数学算法，它将数据分块冗余的分散存储在各各节点的磁盘上，所有的可用磁盘组成一个集合。
+
+- 上图由8块硬盘组成一个集合，当上传一个文件时会通过纠删码算法计算对文件进行分块存储，除了将文件本身分成4个数据块，还会生成4个校验块，数据块和校验块会分散的存储在这8块硬盘上。
+
+- 使用纠删码的好处是即便丢失一半数量（N/2）的硬盘，仍然可以恢复数据。 比如上边集合中有4个以内的硬盘损害仍可保证数据恢复，不影响上传和下载，如果多于一半的硬盘坏了则无法恢复。
+
+### 2、部署
+
+使用docker来部署minio服务，具体步骤如下：
+
+**1)编写docker-compose.yml文件**
+
+```yaml
+version: '3'
+services:
+  minio:
+    image: minio/minio
+    container_name: minio
+    volumes:
+      - /root/minio/data1:/data1
+      - /root/minio/data2:/data2
+      - /root/minio/data3:/data3
+    command: server --console-address ":9001" /data1 /data2 /data3
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio
+    networks:
+       - hm-net
+networks:
+  hm-net:
+    external: true
+```
+
+::: warning
+
+由于只使用了一台服务器，所以使用了三个文件夹来模拟多个节点，有的版本会要求至少四个节点
+
+:::
+
+**2)运行**
+
+```bash
+docker compose up -d
+```
+
+之后访问[http://localhost:9001](http://localhost:9001 ) 进入UI界面。
+
+![](/image/cloud/cloud47.png)
+
+### 3、SDK
+
+MinIO提供多个语言版本SDK的支持，下边找到java版本的文档：
+
+地址：[https://docs.min.io/docs/java-client-quickstart-guide.html](https://docs.min.io/docs/java-client-quickstart-guide.html)
+
+最低需求Java 1.8或更高版本:
+
+maven依赖如下：
+
+```XML
+<dependency>
+    <groupId>io.minio</groupId>
+    <artifactId>minio</artifactId>
+    <version>8.4.3</version>
+</dependency>
+<dependency>
+    <groupId>com.squareup.okhttp3</groupId>
+    <artifactId>okhttp</artifactId>
+    <version>4.8.1</version>
+</dependency>
+```
+
+需要三个参数才能连接到minio服务:
+
+- Endpoint    对象存储服务的URL       
+-  Access Key  账号
+-  Secret Key  密码    
+
+官方的示例代码如下：
+
+```Java
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.UploadObjectArgs;
+import io.minio.errors.MinioException;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+public class FileUploader {
+  public static void main(String[] args)throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    try {
+      // Create a minioClient with the MinIO server playground, its access key and secret key.
+      MinioClient minioClient =
+          MinioClient.builder()
+              .endpoint("https://play.min.io")
+              .credentials("Q3AM3UQ867SPQQA43P2F", "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG")
+              .build();
+      // Make 'asiatrip' bucket if not exist.
+      boolean found =
+          minioClient.bucketExists(BucketExistsArgs.builder().bucket("asiatrip").build());
+      if (!found) {
+        // Make a new bucket called 'asiatrip'.
+        minioClient.makeBucket(MakeBucketArgs.builder().bucket("asiatrip").build());
+      } else {
+        System.out.println("Bucket 'asiatrip' already exists.");
+      }
+      // Upload '/home/user/Photos/asiaphotos.zip' as object name 'asiaphotos-2015.zip' to bucket
+      // 'asiatrip'.
+      minioClient.uploadObject(
+          UploadObjectArgs.builder()
+              .bucket("asiatrip")
+              .object("asiaphotos-2015.zip")
+              .filename("/home/user/Photos/asiaphotos.zip")
+              .build());
+      System.out.println(
+          "'/home/user/Photos/asiaphotos.zip' is successfully uploaded as "
+              + "object 'asiaphotos-2015.zip' to bucket 'asiatrip'.");
+    } catch (MinioException e) {
+      System.out.println("Error occurred: " + e);
+      System.out.println("HTTP trace: " + e.httpTrace());
+    }
+  }
+}
+```
+
+::: warning
+
+创建完bucket之后要将bucket修改为public
+
+![](/image/cloud/cloud48.png)
+
+:::
+
+**上传：**
+
+```java
+public class MinioTest {
+
+    static MinioClient minioClient =
+            MinioClient.builder()
+                    .endpoint("http://192.168.101.65:9000")
+                    .credentials("minioadmin", "minioadmin")
+                    .build();
+
+   //上传文件
+    @Test
+    public  void upload() {
+        //根据扩展名取出mimeType
+        ContentInfo extensionMatch = ContentInfoUtil.findExtensionMatch(".mp4");
+        String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;//通用mimeType，字节流
+        if(extensionMatch!=null){
+            mimeType = extensionMatch.getMimeType();
+        }
+        try {
+            UploadObjectArgs testbucket = UploadObjectArgs.builder()
+                    .bucket("testbucket")
+										 //.object("test001.mp4")
+                    .object("001/test001.mp4")//添加子目录
+                    .filename("D:\\develop\\upload\\1mp4.temp")
+                    .contentType(mimeType)//默认根据扩展名确定文件内容类型，也可以指定
+                    .build();
+            minioClient.uploadObject(testbucket);
+            System.out.println("上传成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("上传失败");
+        }
+
+    }
+
+}
+```
+
+执行upload方法，分别测试向桶的根目录上传文件以及子目录上传文件。
+
+说明：
+
+设置contentType可以通过com.j256.simplemagic.ContentType枚举类查看常用的mimeType（媒体类型）
+
+通过扩展名得到mimeType，代码如下：
+
+```Java
+    //根据扩展名取出mimeType
+    ContentInfo extensionMatch = ContentInfoUtil.findExtensionMatch(".mp4");
+    String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;//通用mimeType，字节流
+
+		if(extensionMatch!=null){
+            mimeType = extensionMatch.getMimeType();
+    }
+```
+
+**删除文件**
+
+```java
+@Test
+public void delete(){
+    try {
+        minioClient.removeObject(
+         RemoveObjectArgs.builder().bucket("testbucket").object("001/test001.mp4").build());
+        System.out.println("删除成功");
+    } catch (Exception e) {
+       e.printStackTrace();
+        System.out.println("删除失败");
+    }
+}
+```
+
+**查询文件**
+
+```Java
+//查询文件
+@Test
+public void getFile() {
+    GetObjectArgs getObjectArgs = GetObjectArgs.builder().bucket("testbucket").object("test001.mp4").build();
+    try(
+        FilterInputStream inputStream = minioClient.getObject(getObjectArgs);
+        FileOutputStream outputStream = new FileOutputStream(new File("D:\\develop\\upload\\1_2.mp4"));
+     ) {
+        IOUtils.copy(inputStream,outputStream);
+     } catch (Exception e) {
+        e.printStackTrace();
+     }
+}
+```
+
+校验文件的完整性，对文件计算出md5值，比较原始文件的md5和目标文件的md5，一致则说明完整
+
+```Java
+//校验文件的完整性对文件的内容进行md5
+FileInputStream fileInputStream1 = new FileInputStream(new File("D:\\develop\\upload\\1.mp4"));
+String source_md5 = DigestUtils.md5Hex(fileInputStream1);
+FileInputStream fileInputStream = new FileInputStream(new File("D:\\develop\\upload\\1a.mp4"));
+String local_md5 = DigestUtils.md5Hex(fileInputStream);
+if(source_md5.equals(local_md5)){
+    System.out.println("下载成功");
+}
+```
+
