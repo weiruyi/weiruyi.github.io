@@ -620,7 +620,7 @@ nginx
 docker run --name seata \
 -p 8099:8099 \
 -p 7099:7099 \
--e SEATA_IP=49.234.52.192 \
+-e SEATA_IP=ipaddr \
 -v ./seata:/seata-server/resources \
 --privileged=true \
 --network hm-net \
@@ -658,5 +658,18 @@ COPY sentinel-dashboard.jar /app.jar
 # 入口
 # ENTRYPOINT ["sh",  "/run.sh"]
 ENTRYPOINT ["java", "-Dserver.port=8090", "-Dcsp.sentinel.dashboard.server=localhost:8090", "-Dproject.name=sentinel-dashboard", "-jar", "/app.jar"]
+```
+
+### 6、xxl-job
+
+```bash
+ docker run -d \
+ -e PARAMS="--spring.datasource.url=jdbc:mysql://mysql:3306/xxl_job?Unicode=true&characterEncoding=UTF-8 --spring.datasource.username=root --spring.datasource.password=123" \
+ -p 8088:8080 \
+ -v /root/xxl-job:/data/applogs \
+ --name xxl-job \
+ --privileged=true \
+ --network hm-net \
+ xuxueli/xxl-job-admin:2.3.1
 ```
 
