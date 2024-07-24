@@ -94,6 +94,10 @@ url = https://用户名:密码@github.com/用户名/仓库名.git
 
 //3、拉取线上仓库
 git pull
+
+//拉取指定分支
+git pull origin <远程分支名>:<本地分支名>
+git pull origin <远程分支名>
 ```
 
 ### 2)SSH（推荐）
