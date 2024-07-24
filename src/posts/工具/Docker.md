@@ -149,6 +149,7 @@ docker run -d \
  -e TZ=Asia/Shanghai \
  -e MYSQL_ROOT_PASSWORD=12345678 \
  mysql
+ 
 ```
 
 **解释：**
@@ -340,6 +341,42 @@ docker login  # 登录
 docker image push ruyiwei/test	# 上传
 ```
 
+#### 3）示例
+
+基于docker部署web应用：
+
+Dockerfile:
+
+```dockerfile
+# 基础镜像
+FROM openjdk:11.0-jre-buster
+# 设定时区
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# 拷贝jar包
+COPY docker-demo.jar /app.jar
+# 入口
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+进入镜像目录，构建镜像:
+
+```bash
+docker build -t docker-demo:1.0 .
+
+# 直接指定Dockerfile目录
+docker build -t docker-demo:1.0 /root/demo
+```
+
+最后运行该镜像
+
+```bash
+# 创建并运行容器
+docker run -d --name dd -p 8080:8080 docker-demo:1.0
+```
+
+
+
 ### 5、容器网络互联
 
 加入自定义网络的容器才可以通过容器名互相访问，Docker的网络操作命令如下:
@@ -353,6 +390,53 @@ docker image push ruyiwei/test	# 上传
 | docker network connect    | 使指定容器加入某网络 |
 | docker network disconnect | 使指定容器离开某网络 |
 | docker network inspect    | 查看网络详细信息     |
+
+示例：
+
+```bash
+# 1.首先通过命令创建一个网络
+docker network create hmall
+
+# 2.然后查看网络
+docker network ls
+# 结果：
+NETWORK ID     NAME      DRIVER    SCOPE
+639bc44d0a87   bridge    bridge    local
+403f16ec62a2   hmall     bridge    local
+0dc0f72a0fbb   host      host      local
+cd8d3e8df47b   none      null      local
+# 其中，除了hmall以外，其它都是默认的网络
+
+# 3.让dd和mysql都加入该网络，注意，在加入网络时可以通过--alias给容器起别名
+# 这样该网络内的其它容器可以用别名互相访问！
+# 3.1.mysql容器，指定别名为db，另外每一个容器都有一个别名是容器名
+docker network connect hmall mysql --alias db
+# 3.2.db容器，也就是我们的java项目
+docker network connect hmall dd
+
+# 4.进入dd容器，尝试利用别名访问db
+# 4.1.进入容器
+docker exec -it dd bash
+# 4.2.用db别名访问
+ping db
+# 结果
+PING db (172.18.0.2) 56(84) bytes of data.
+64 bytes from mysql.hmall (172.18.0.2): icmp_seq=1 ttl=64 time=0.070 ms
+64 bytes from mysql.hmall (172.18.0.2): icmp_seq=2 ttl=64 time=0.056 ms
+# 4.3.用容器名访问
+ping mysql
+# 结果：
+PING mysql (172.18.0.2) 56(84) bytes of data.
+64 bytes from mysql.hmall (172.18.0.2): icmp_seq=1 ttl=64 time=0.044 ms
+64 bytes from mysql.hmall (172.18.0.2): icmp_seq=2 ttl=64 time=0.054 ms
+```
+
+::: tip 总结：
+
+- 在自定义网络中，可以给容器起多个别名，默认的别名是容器名本身
+- 在同一个自定义网络中的容器，可以通过别名互相访问
+
+:::
 
 ### 6、DockerCompose
 
@@ -429,4 +513,150 @@ docker compose [OPTIONS] [COMMAND]
   - `restart` 重启容器
   - `top`查看运行的进程
   - `exec`在指定的运行中容器中执行命令
+
+**示例：** 使用DockerCompose部署minio
+
+docker-compose.yml文件
+
+```yaml
+version: '3'
+services:
+  minio:
+    image: minio/minio
+    container_name: minio
+    volumes:
+      - /root/minio/data1:/data1
+      - /root/minio/data2:/data2
+      - /root/minio/data3:/data3
+    command: server --console-address ":9001" /data1 /data2 /data3
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio
+    networks:
+       - hm-net
+networks:
+  hm-net:
+    external: true
+```
+
+启动：
+
+```bash
+docker compose up -d  #-d是后台启动
+```
+
+其他命令：
+
+```bash
+# 查看镜像
+docker compose images
+#查看配置: 
+docker-compose config
+# 后台启动: 
+docker-compose up -d
+# 构建镜像: 
+docker-compose build
+# 下载镜像: 
+docker-compose pull
+# 查看正在运行: 
+docker-compose ps
+```
+
+## 四、案例
+
+### 1、部署mysql
+
+首先启动一个mysql并复制配置文件到宿主机器
+
+```bash
+docker cp mysql:/var/lib/mysql /root/mysql/data
+docker cp mysql:/etc/mysql/conf.d /root/mysql/conf
+docker cp mysql:/docker-entrypoint-initdb.d /root/mysql/init
+```
+
+之后删除之前的容器，并重新按以下命令启动
+
+```bash
+docker run -d \
+  --name mysql \
+  -p 3306:3306 \
+  -e TZ=Asia/Shanghai \
+  -e MYSQL_ROOT_PASSWORD=123 \
+  -v /root/mysql/data:/var/lib/mysql \
+  -v /root/mysql/conf:/etc/mysql/conf.d \
+  -v /root/mysql/init:/docker-entrypoint-initdb.d \
+  --network hm-net\
+  mysql
+```
+
+### 2、nginx
+
+拷贝要挂载的文件
+
+```bash
+docker cp nginx:/etc/nginx /root/nginx_blog/conf
+docker cp nginx:/usr/share/nginx/html /root/nginx_blog/html
+docker cp nginx:/var/log/nginx /root/nginx_blog/logs
+```
+
+启动
+
+```bash
+docker run -d \
+-p 80:80 \
+--name nginx_blog \
+-v /root/nginx_blog/html:/usr/share/nginx/html \
+-v /root/nginx_blog/logs:/var/log/nginx \
+-v /root/nginx_blog/conf:/etc/nginx \
+nginx
+```
+
+### 3、seata
+
+```
+docker run --name seata \
+-p 8099:8099 \
+-p 7099:7099 \
+-e SEATA_IP=49.234.52.192 \
+-v ./seata:/seata-server/resources \
+--privileged=true \
+--network hm-net \
+-d \
+seataio/seata-server:1.5.2
+```
+
+### 4、nacos
+
+```
+docker run -d \
+--name nacos \
+--env-file ./nacos/custom.env \
+-p 8848:8848 \
+-p 9848:9848 \
+-p 9849:9849 \
+--restart=always \
+--network hm-net\
+nacos/nacos-server:v2.1.0-slim
+```
+
+### 5、sentinel
+
+dockerfile:
+
+```dockerfile
+# 基础镜像
+FROM openjdk:11.0-jre-buster
+# 设定时区
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# 拷贝jar包
+COPY sentinel-dashboard.jar /app.jar
+# COPY run.sh /run.sh
+# 入口
+# ENTRYPOINT ["sh",  "/run.sh"]
+ENTRYPOINT ["java", "-Dserver.port=8090", "-Dcsp.sentinel.dashboard.server=localhost:8090", "-Dproject.name=sentinel-dashboard", "-jar", "/app.jar"]
+```
 

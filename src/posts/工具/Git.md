@@ -10,7 +10,7 @@ description: Git的使用指南
 
 # Git
 
-# 1、全局配置
+## 1、全局配置
 
 ```shell
 git config --global user.name "******"  //用户名
@@ -18,7 +18,7 @@ git config --global user.name "******"  //用户名
 git config --global user.email "1*******@qq.com"  // 邮箱
 ```
 
-# 2、创建仓库
+## 2、创建仓库
 
 ```shell
 //1、Git仓库初始化（让Git知道，他需要来管理这个目录）
@@ -36,7 +36,7 @@ git commit -m "注释内容"   //提交至版本库
 
 ```
 
-# 3、版本回退
+## 3、版本回退
 
 ```shell
 //1、查看版本
@@ -64,9 +64,9 @@ git reflog
 
 
 
-# 4、Git远程仓库创建
+## 4、Git远程仓库创建
 
-## 1）HTTP
+### 1）HTTP
 
 `a,`创建空目录，和github仓库名称一样
 
@@ -96,7 +96,7 @@ url = https://用户名:密码@github.com/用户名/仓库名.git
 git pull
 ```
 
-## 2)SSH（推荐）
+### 2)SSH（推荐）
 
 创建秘钥
 
@@ -114,7 +114,19 @@ ssh-keygen -t rsa -C "***@cherish.pw"
 
 之后正常   提交暂存区、提交本地仓库、提交线上仓库、拉取线上仓库
 
-# 5、分支管理
+### 3)关联远程仓库
+
+```bash
+// -b branch 指定分支
+git clone -b branch 远程仓库地址
+
+//绑定远程仓库
+git remote add origin  https://xxxxxxxxx.git\
+//关联分支，绑定仓库之后使用
+git branch --set-upstream-to=origin/develop develop
+```
+
+### 5、分支管理
 
 ```shell
 //分支相关指令:
@@ -129,7 +141,7 @@ git merge 被合并的分支名  //合并分支
 
 
 
-# 6、冲突的产生与解决
+## 6、冲突的产生与解决
 
 解决冲突：
 
