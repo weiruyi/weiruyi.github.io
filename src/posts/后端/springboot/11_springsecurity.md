@@ -4,7 +4,7 @@ date: 2024-07-31
 tags: Spring
 category: Spring
 order: 11
-icon: "/img/spring.svg"
+icon: "/img/spring-security.svg"
 ---
 
 <!--more--->

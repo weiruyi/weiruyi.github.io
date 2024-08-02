@@ -141,7 +141,30 @@ export default navbar([
       {
         text: "项目",
         icon: "/img/项目.svg",
-        link: "/posts/项目/"
+        link: "/posts/项目/",
+        prefix: "/posts/项目/",
+        children: [
+          {
+            text: "苍穹外卖",
+            icon: "/img/外卖.svg",
+            link: "skytakeout/"
+          },
+          {
+            text: "黑马商城",
+            icon: "/img/商城.svg",
+            link: "hmall/"
+          },
+          {
+            text: "黑马头条",
+            icon: "/img/头条.svg",
+            link: "heimaLeadnews/"
+          },
+          {
+            text: "学成在线",
+            icon: "/img/教育.svg",
+            link: "studyOnline/"
+          }
+        ]
         
       }
 
