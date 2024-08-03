@@ -45,11 +45,6 @@ export default sidebar({
       link: "Git"
     },
     {
-      text: "AliOSS",
-      icon: "/img/阿里OSS.svg",
-      link: "AliOSS"
-    },
-    {
       text: "Docker",
       icon: "/img/docker.svg",
       link: "Docker"

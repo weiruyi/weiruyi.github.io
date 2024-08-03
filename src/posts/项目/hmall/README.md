@@ -2,7 +2,7 @@
 title: 黑马商城
 date: 2024-07-04 16:24:22
 tags: 项目
-category: 项目
+category: 黑马商城
 icon: "/img/商城.svg"
 ---
 
