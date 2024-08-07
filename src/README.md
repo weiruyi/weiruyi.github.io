@@ -30,6 +30,7 @@ projects:
     link: https://programmercarl.com/
 
 footer: "Powered by <a href=\"https://v2.vuepress.vuejs.org/zh/\" target=\"_blank\"> VuePress </a> | Theme <a href=\"https://theme-hope.vuejs.press/zh/\" target=\"_blank\"> Hope </a>"
-copyright: Copyright © 2024 - present <center><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span></center>
+copyright: Copyright © 2024 - present <center><a href="https://beian.miit.gov.cn/" target="_blank">鄂ICP备2024067415号-1</a></center>
+# <center><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span></center>
 ---
 
