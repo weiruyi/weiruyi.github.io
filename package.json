@@ -11,20 +11,20 @@
     "docs:update-package": "pnpm dlx vp-update",
     "docs:deploy-mac": " sh ./deploy_code.sh ",
     "docs:deploy-win": "deploy_code.bat ",
-    "docs:pull": " git pull "
+    "docs:pull": " git pull"
   },
   "devDependencies": {
-    "@vuepress/bundler-vite": "2.0.0-rc.15",
+    "@vuepress/bundler-vite": "2.0.0-rc.9",
     "@waline/client": "^3.2.0",
     "katex": "^0.16.10",
     "mathjax-full": "^3.2.2",
-    "vue": "^3.5.0",
-    "vuepress": "2.0.0-rc.15",
-    "vuepress-theme-hope": "2.0.0-rc.52"
+    "vue": "^3.4.27",
+    "vuepress": "2.0.0-rc.9",
+    "vuepress-theme-hope": "2.0.0-rc.43"
   },
   "dependencies": {
     "@vssue/api-github-v3": "^1.4.7",
-    "@vssue/vuepress-plugin-vssue": "1.4.8",
+    "@vssue/vuepress-plugin-vssue": "^1.4.8",
     "busuanzi.pure.js": "^1.0.3"
   }
 }
