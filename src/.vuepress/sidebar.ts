@@ -48,12 +48,7 @@ export default sidebar({
       text: "Docker",
       icon: "/img/docker.svg",
       link: "Docker"
-    },{
-      text: "Kubernetes",
-      icon: "/img/k8s.svg",
-      link: "k8s"
     }
-    
     
   ],
   "/posts/后端/": [
