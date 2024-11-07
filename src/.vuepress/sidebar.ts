@@ -1,33 +1,33 @@
 import { sidebar } from "vuepress-theme-hope";
 
 export default sidebar({
-  "/posts/数据库/": [
-    {
-      text: "SQL语句",
-      icon: "/img/SQL.svg",
-      link: "SQL"
-    }, {
-      text: "MyBatis",
-      icon: "/img/mybatis.svg",
-      link: "MyBatis"
-    }, {
-      text: "MyBatisPlus",
-      icon: "/img/mybatisplus.svg",
-      link: "MyBatisPlus"
-    }, {
-      text: "Redis",
-      icon: "/img/redis.svg",
-      prefix: "Redis",
-      children: "structure",
-      link: "Redis/"
-    }, {
-      text: "MySQL",
-      icon: "/img/mysql.svg",
-      prefix: "MySQL",
-      children: "structure",
-      link: "MySQL/"
-    }
-  ],
+  // "/posts/数据库/": [
+  //   {
+  //     text: "SQL语句",
+  //     icon: "/img/SQL.svg",
+  //     link: "SQL"
+  //   }, {
+  //     text: "MyBatis",
+  //     icon: "/img/mybatis.svg",
+  //     link: "MyBatis"
+  //   }, {
+  //     text: "MyBatisPlus",
+  //     icon: "/img/mybatisplus.svg",
+  //     link: "MyBatisPlus"
+  //   }, {
+  //     text: "Redis",
+  //     icon: "/img/redis.svg",
+  //     prefix: "Redis",
+  //     children: "structure",
+  //     link: "Redis/"
+  //   }, {
+  //     text: "MySQL",
+  //     icon: "/img/mysql.svg",
+  //     prefix: "MySQL",
+  //     children: "structure",
+  //     link: "MySQL/"
+  //   }
+  // ],
   "/posts/工具/": [
     {
       text: "Markdown",
@@ -53,18 +53,24 @@ export default sidebar({
   ],
   "/posts/后端/": [
     {
-      text: "Java",
-        icon: "/img/java.svg",
+      text: "Java基础",
+      icon: "/img/java.svg",
       prefix: "Java",
       children: "structure"
     },
+    {
+      text: "数据库",
+      icon: "/img/数据库.svg",
+      prefix: "数据库",
+      children: "structure"
+    },
      {
-      text: "SpringBoot",
+      text: "后端",
       icon: "/img/SPRINGBOOT.svg",
       prefix: "springboot",
       children: "structure"
     }, {
-      text: "SpringCloud",
+      text: "微服务",
       icon: "/img/SpringCloud.svg",
       prefix: "springcloud",
       children: "structure"

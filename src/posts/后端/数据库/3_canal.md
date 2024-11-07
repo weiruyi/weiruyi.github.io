@@ -7,7 +7,7 @@ category:
   - 数据同步
   - ElasticSearch
 icon: "/img/数据同步.svg"
-order: 2
+order: 3
 ---
 
 # Canal数据同步

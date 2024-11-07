@@ -4,6 +4,8 @@ date: 2024-05-22 16:14:58
 tags: code
 category: 数据库
 description: SQL语句
+icon: "/img/SQL.svg"
+order: 1
 ---
 
 <!--more--->

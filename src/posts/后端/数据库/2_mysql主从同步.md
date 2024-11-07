@@ -6,7 +6,7 @@ category:
   - 八股
   - 数据同步
 icon: "/img/mysql.svg"
-order: 1
+order: 2
 ---
 
 <!--more--->

@@ -35,17 +35,22 @@ export default navbar([
     prefix: "/posts/后端/",
     children: [
       {
-        text: "Java",
+        text: "Java基础",
         icon: "/img/java.svg",
         link: "Java/"
       },
       {
-        text: "SpringBoot",
+        text: "数据库",
+        icon: "/img/数据库.svg",
+        link: "数据库/"
+      },
+      {
+        text: "后端",
         icon: "/img/SPRINGBOOT.svg",
         link: "springboot/"
       },
       {
-        text: "SpringCloud",
+        text: "微服务",
         icon: "/img/SpringCloud.svg",
         link: "springcloud/"
       },
@@ -56,40 +61,40 @@ export default navbar([
       }
     ]
   },
-  {
-    text: "数据库",
-    icon: "/img/数据库.svg",
-    prefix: "/posts/数据库",
-    // children: ["MySQL", "MyBatis", "MyBatisPlus"]
-    children: [
-      {
-        text: "SQL语句",
-        icon: "/img/SQL.svg",
-        link: "SQL"
-      },
-      {
-        text: "MyBatis",
-        icon: "/img/mybatis.svg",
-        link: "MyBatis"
-      },
-      {
-        text: "MyBatisPlus",
-        icon: "/img/mybatisplus.svg",
-        link: "MyBatisPlus"
-      }, {
-        text: "Redis",
-        icon: "/img/redis.svg",
-        link: "Redis/",
+  // {
+  //   text: "数据库",
+  //   icon: "/img/数据库.svg",
+  //   prefix: "/posts/数据库",
+  //   // children: ["MySQL", "MyBatis", "MyBatisPlus"]
+  //   children: [
+  //     {
+  //       text: "SQL语句",
+  //       icon: "/img/SQL.svg",
+  //       link: "SQL"
+  //     },
+  //     {
+  //       text: "MyBatis",
+  //       icon: "/img/mybatis.svg",
+  //       link: "MyBatis"
+  //     },
+  //     {
+  //       text: "MyBatisPlus",
+  //       icon: "/img/mybatisplus.svg",
+  //       link: "MyBatisPlus"
+  //     }, {
+  //       text: "Redis",
+  //       icon: "/img/redis.svg",
+  //       link: "Redis/",
         
-      }, {
-        text: "MySQL",
-        icon: "/img/mysql.svg",
-        link: "MySQL/",
+  //     }, {
+  //       text: "MySQL",
+  //       icon: "/img/mysql.svg",
+  //       link: "MySQL/",
         
-      }
-    ]
+  //     }
+  //   ]
 
-  },
+  // },
   // {
   //   text: "Java",
   //   icon: "/img/java.svg",

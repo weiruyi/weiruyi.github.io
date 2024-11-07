@@ -4,6 +4,8 @@ date: 2024-05-22 16:22:02
 tags: code
 category: 数据库
 description: MyBatis Quick Start
+icon: "/img/mybatis.svg"
+order: 4
 ---
 
 <!--more--->
