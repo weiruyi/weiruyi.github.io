@@ -6,7 +6,7 @@ category: 数据库
 description: MyBatisPlus使用指南
 star: true
 icon: "/img/mybatisplus.svg"
-order: 5
+order: 11
 ---
 
 <!--more--->

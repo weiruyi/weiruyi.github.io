@@ -5,7 +5,7 @@ tags: code
 category: 数据库
 description: MyBatis Quick Start
 icon: "/img/mybatis.svg"
-order: 4
+order: 10
 ---
 
 <!--more--->
