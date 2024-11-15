@@ -1,6 +1,6 @@
 set -e
 
-pnpm run docs:build   
+# pnpm run docs:build   
 
 # git init
 git add -A
