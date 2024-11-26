@@ -1,10 +1,8 @@
 ---
 title: 算法
 date: 2024-04-24 16:24:22
-tags: 八股
+tags: 算法
 category: 计算机基础
-description: 算法
-home: false
 ---
 
 <!--more--->

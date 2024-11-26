@@ -1,9 +1,8 @@
 ---
 title: MyBatis
 date: 2024-05-22 16:22:02
-tags: code
+tag: mysql
 category: 数据库
-description: MyBatis Quick Start
 icon: "/img/mybatis.svg"
 order: 10
 ---

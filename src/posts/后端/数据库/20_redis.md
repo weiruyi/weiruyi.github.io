@@ -1,7 +1,7 @@
 ---
 title: Redis基础
 date: 2024-05-27 16:14:58
-tags: code
+tags: redis
 category: 数据库
 order: 20
 icon: "/img/redis.svg"

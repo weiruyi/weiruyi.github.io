@@ -1,10 +1,8 @@
 ---
 title: MyBatisPlus
 date: 2024-05-22 16:28:09
-tags: code
+tag: mysql
 category: 数据库
-description: MyBatisPlus使用指南
-star: true
 icon: "/img/mybatisplus.svg"
 order: 11
 ---

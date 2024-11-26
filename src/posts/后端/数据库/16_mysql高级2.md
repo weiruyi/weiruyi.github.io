@@ -2,6 +2,7 @@
 title: MySQL高级二
 date: 2024-11-22 16:14:58
 category: 数据库
+tag: mysql
 icon: "/img/mysql.svg"
 order: 16
 

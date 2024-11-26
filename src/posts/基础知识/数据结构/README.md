@@ -1,10 +1,8 @@
 ---
 title: 数据结构
 date: 2024-04-24 16:24:22
-tags: 八股
+tags: 数据结构
 category: 计算机基础
-description: 数据结构
-home: false
 ---
 
 <!--more--->

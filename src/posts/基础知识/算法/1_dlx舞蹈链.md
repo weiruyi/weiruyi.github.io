@@ -2,7 +2,7 @@
 title: DLX舞蹈链
 date: 2024-09-05 
 category: 计算机基础
-description: 算法
+tags: 算法
 order: 1
 ---
 
