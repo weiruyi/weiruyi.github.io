@@ -15,6 +15,8 @@ icon: "/img/redis.svg"
 
 Redis的发布订阅功能由PUBLISH, SUBSCRIBE, PSUBSCRIBE, PUNSUBSCRIBE等命令实现，客户端可以订阅一个或多个频道/模式，服务器根据是否订阅频道、模式是否匹配，决定是否发送给指定客户端消息。
 
+<!-- more -->
+
 ### 1、频道
 
 客户端执行SUBSCRIBE命令订阅频道后，这个客户端就和频道建立了订阅关系。所有订阅关系保存在`redisServer/pubsub_channels`字典中，字典的键是频道，值是订阅者的链表。

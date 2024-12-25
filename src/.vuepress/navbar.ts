@@ -40,6 +40,11 @@ export default navbar([
         link: "Java/"
       },
       {
+        text: "GoLang基础",
+        icon: "/img/golang.svg",
+        link: "GoLang/"
+      },
+      {
         text: "数据库",
         icon: "/img/数据库.svg",
         link: "数据库/"
@@ -159,6 +164,11 @@ export default navbar([
             text: "学成在线",
             icon: "/img/教育.svg",
             link: "studyOnline/"
+          },
+          {
+            text: "短链接系统",
+            icon: "/img/link.svg",
+            link: "shortService/"
           }
         ]
         

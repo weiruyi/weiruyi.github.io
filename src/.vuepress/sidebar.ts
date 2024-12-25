@@ -59,6 +59,12 @@ export default sidebar({
       children: "structure"
     },
     {
+      text: "GoLang基础",
+      icon: "/img/golang.svg",
+      prefix: "GoLang",
+      children: "structure"
+    },
+    {
       text: "数据库",
       icon: "/img/数据库.svg",
       prefix: "数据库",
@@ -143,6 +149,12 @@ export default sidebar({
       text: "学成在线",
       icon: "/img/教育.svg",
       prefix: "studyOnline",
+      children: "structure"
+    },
+    {
+      text: "短链接系统",
+      icon: "/img/link.svg",
+      prefix: "shortService",
       children: "structure"
     }
   ],
