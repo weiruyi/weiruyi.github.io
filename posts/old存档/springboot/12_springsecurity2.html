@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content="VuePress 2.0.0-rc.9" />
+    <meta name="theme" content="VuePress Theme Hope 2.0.0-rc.43" />
+    <style>
+      html {
+        background: var(--bg-color, #fff);
+      }
+
+      html[data-theme="dark"] {
+        background: var(--bg-color, #1d1e1f);
+      }
+
+      body {
+        background: var(--bg-color);
+      }
+    </style>
+    <script>
+      const userMode = localStorage.getItem("vuepress-theme-hope-scheme");
+      const systemDarkMode =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (userMode === "dark" || (userMode !== "light" && systemDarkMode)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    </script>
+    <meta property="og:url" content="https://mister-hope.github.io/posts/old%E5%AD%98%E6%A1%A3/springboot/12_springsecurity2.html"><meta property="og:site_name" content="Lance"><meta property="og:title" content="SpringSecurity进阶"><meta property="og:description" content="SpringSecurity进阶应用 一、统一认证入口 目前各大网站的认证方式非常丰富： 账号密码认证 手机验证码认证 扫码登录等。 基于当前研究的Spring Security认证流程如何支持多样化的认证方式呢？ 1、支持账号和密码认证: 采用OAuth2协议的密码模式即可实现。 2、支持手机号加验证码认证: 用户认证提交的是手机号和验证码，并不是账..."><meta property="og:type" content="article"><meta property="og:image" content="https://mister-hope.github.io/image/spring/spring10.png"><meta property="og:locale" content="zh-CN"><meta property="og:updated_time" content="2026-02-10T11:21:07.000Z"><meta property="article:author" content="RuyiWei"><meta property="article:published_time" content="2024-08-01T00:00:00.000Z"><meta property="article:modified_time" content="2026-02-10T11:21:07.000Z"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SpringSecurity进阶","image":["https://mister-hope.github.io/image/spring/spring10.png","https://mister-hope.github.io/image/spring/spring11.png","https://mister-hope.github.io/image/spring/spring12.png","https://mister-hope.github.io/image/spring/spring13.png","https://mister-hope.github.io/image/spring/spring14.png","https://mister-hope.github.io/image/spring/spring15.png","https://mister-hope.github.io/image/spring/spring16.png","https://mister-hope.github.io/image/spring/spring17.png","https://mister-hope.github.io/image/spring/spring18.png","https://mister-hope.github.io/image/spring/spring19.png","https://mister-hope.github.io/image/spring/spring20.png","https://mister-hope.github.io/image/spring/spring21.png","https://mister-hope.github.io/image/spring/spring22.png","https://mister-hope.github.io/image/spring/spring23.png"],"datePublished":"2024-08-01T00:00:00.000Z","dateModified":"2026-02-10T11:21:07.000Z","author":[{"@type":"Person","name":"RuyiWei"}]}</script><link rel="icon" href="/logo.png"><title>SpringSecurity进阶 | Lance</title><meta name="description" content="SpringSecurity进阶应用 一、统一认证入口 目前各大网站的认证方式非常丰富： 账号密码认证 手机验证码认证 扫码登录等。 基于当前研究的Spring Security认证流程如何支持多样化的认证方式呢？ 1、支持账号和密码认证: 采用OAuth2协议的密码模式即可实现。 2、支持手机号加验证码认证: 用户认证提交的是手机号和验证码，并不是账...">
+    <link rel="preload" href="/assets/style-CIdtaYfF.css" as="style"><link rel="stylesheet" href="/assets/style-CIdtaYfF.css">
+    <link rel="modulepreload" href="/assets/app-CwUAqAGx.js"><link rel="modulepreload" href="/assets/12_springsecurity2.html-DV7KSxx8.js"><link rel="modulepreload" href="/assets/plugin-vue_export-helper-DlAUqK2U.js">
+    <link rel="prefetch" href="/assets/index.html-ZQo1Tb78.js" as="script"><link rel="prefetch" href="/assets/index.html-D_zDeK7z.js" as="script"><link rel="prefetch" href="/assets/AliOSS.html-CV1ftqih.js" as="script"><link rel="prefetch" href="/assets/Docker.html-7iBXJ1Z2.js" as="script"><link rel="prefetch" href="/assets/Git.html-_52V84FL.js" as="script"><link rel="prefetch" href="/assets/Markdown.html-CY3wZ1PR.js" as="script"><link rel="prefetch" href="/assets/latexMath.html-yki8WFys.js" as="script"><link rel="prefetch" href="/assets/2_go锁机制.html-DqlyEhOh.js" as="script"><link rel="prefetch" href="/assets/index.html-DqdDos6F.js" as="script"><link rel="prefetch" href="/assets/10-分布式锁.html-ByuyNMp3.js" as="script"><link rel="prefetch" href="/assets/2-字节码文件.html-DSS9B2UM.js" as="script"><link rel="prefetch" href="/assets/20_nio.html-2TJKDxr2.js" as="script"><link rel="prefetch" href="/assets/21_Netty基础.html-BNd3mn_x.js" as="script"><link rel="prefetch" href="/assets/22_Netty进阶.html-OD9rXs9o.js" as="script"><link rel="prefetch" href="/assets/3-类加载器.html-CyYWVSxA.js" as="script"><link rel="prefetch" href="/assets/30_反射和动态代理.html-EiMXtSBt.js" as="script"><link rel="prefetch" href="/assets/4_垃圾回收.html-d-7W-ZF7.js" as="script"><link rel="prefetch" href="/assets/index.html-CtrqxrPJ.js" as="script"><link rel="prefetch" href="/assets/2_es基础.html-CgUJRcdZ.js" as="script"><link rel="prefetch" href="/assets/3_esDSL.html-B8wAhnq4.js" as="script"><link rel="prefetch" href="/assets/4_elasticSearch与MySQL数据同步.html-BXvqb9lI.js" as="script"><link rel="prefetch" href="/assets/5_ES集群.html-vFBnp7j5.js" as="script"><link rel="prefetch" href="/assets/index.html-DbgqDfCd.js" as="script"><link rel="prefetch" href="/assets/10_自动装配原理.html-BJ1jgmpD.js" as="script"><link rel="prefetch" href="/assets/11_springsecurity.html-BEyN8zda.js" as="script"><link rel="prefetch" href="/assets/9_事务.html-CDxTTvtL.js" as="script"><link rel="prefetch" href="/assets/IOC.html-C9qhrKpT.js" as="script"><link rel="prefetch" href="/assets/index.html-DrDBvak1.js" as="script"><link rel="prefetch" href="/assets/SpringTask_7.html-BJwd3qcS.js" as="script"><link rel="prefetch" href="/assets/aop.html-CKMkPgCB.js" as="script"><link rel="prefetch" href="/assets/jwt.html-hjXSvys1.js" as="script"><link rel="prefetch" href="/assets/websocket_8.html-kMj4dPZc.js" as="script"><link rel="prefetch" href="/assets/拦截器过滤器.html-DDuazmHs.js" as="script"><link rel="prefetch" href="/assets/缓存.html-Bcqpfbu_.js" as="script"><link rel="prefetch" href="/assets/10_minio.html-G1ep-7vE.js" as="script"><link rel="prefetch" href="/assets/11_xxl-job.html-BZrMLdaX.js" as="script"><link rel="prefetch" href="/assets/12_kafka.html-pWBjUClv.js" as="script"><link rel="prefetch" href="/assets/6_服务保护.html-D03V7wyO.js" as="script"><link rel="prefetch" href="/assets/7_分布式事务.html-DkUDJKEn.js" as="script"><link rel="prefetch" href="/assets/8_MQ基础.html-DoeU-X0X.js" as="script"><link rel="prefetch" href="/assets/9_MQ高级.html-3pYP8REE.js" as="script"><link rel="prefetch" href="/assets/index.html-DGzl319x.js" as="script"><link rel="prefetch" href="/assets/服务注册与远程调用.html-BfrUig33.js" as="script"><link rel="prefetch" href="/assets/统一网关路由_4.html-3Wtc3rA7.js" as="script"><link rel="prefetch" href="/assets/配置管理_5.html-DH-iPLyT.js" as="script"><link rel="prefetch" href="/assets/10_MyBatis.html-DXSS5PPJ.js" as="script"><link rel="prefetch" href="/assets/11_MyBatisPlus.html-1FGZ4Gj9.js" as="script"><link rel="prefetch" href="/assets/15_MySQL高级1.html-CB2lcBU2.js" as="script"><link rel="prefetch" href="/assets/16_mysql高级2.html-C099pRjM.js" as="script"><link rel="prefetch" href="/assets/20_redis.html-C1obPOp-.js" as="script"><link rel="prefetch" href="/assets/21_redis数据结构.html-CHEzl3c3.js" as="script"><link rel="prefetch" href="/assets/22_redis单机.html-CxMPGNZB.js" as="script"><link rel="prefetch" href="/assets/23_redis多机.html-DmwGRwci.js" as="script"><link rel="prefetch" href="/assets/24_redis独立功能.html-__PPcbvT.js" as="script"><link rel="prefetch" href="/assets/2_mysql主从同步.html-C3vpJ-k2.js" as="script"><link rel="prefetch" href="/assets/3_读写分离.html-BgUl_y2N.js" as="script"><link rel="prefetch" href="/assets/4_canal.html-BFgqZmP_.js" as="script"><link rel="prefetch" href="/assets/index.html-BXOI4OFw.js" as="script"><link rel="prefetch" href="/assets/1_dlx舞蹈链.html-DFPo7-PG.js" as="script"><link rel="prefetch" href="/assets/2_A星算法.html-BvTmUHpu.js" as="script"><link rel="prefetch" href="/assets/3_字符串匹配.html-B0w2p7is.js" as="script"><link rel="prefetch" href="/assets/index.html-DsUinOLP.js" as="script"><link rel="prefetch" href="/assets/404.html-C0no69nZ.js" as="script"><link rel="prefetch" href="/assets/index.html-DUQtwH8n.js" as="script"><link rel="prefetch" href="/assets/index.html-nABiMvVb.js" as="script"><link rel="prefetch" href="/assets/index.html-DlQCv9AP.js" as="script"><link rel="prefetch" href="/assets/index.html-CBBnCKB4.js" as="script"><link rel="prefetch" href="/assets/index.html-D4Z0FUNo.js" as="script"><link rel="prefetch" href="/assets/index.html-CCT8ECVb.js" as="script"><link rel="prefetch" href="/assets/index.html-D7DU9Sl4.js" as="script"><link rel="prefetch" href="/assets/index.html-pMM5SpEh.js" as="script"><link rel="prefetch" href="/assets/index.html-D7ZXnF32.js" as="script"><link rel="prefetch" href="/assets/index.html-DNCpQV-b.js" as="script"><link rel="prefetch" href="/assets/index.html-CWB7k6Ay.js" as="script"><link rel="prefetch" href="/assets/index.html-BNXSqoa6.js" as="script"><link rel="prefetch" href="/assets/index.html-DlhvocjJ.js" as="script"><link rel="prefetch" href="/assets/index.html-BQ0TK8Oc.js" as="script"><link rel="prefetch" href="/assets/index.html-2syF-JHx.js" as="script"><link rel="prefetch" href="/assets/index.html-Bn3o-3SP.js" as="script"><link rel="prefetch" href="/assets/index.html-DqvCJcpx.js" as="script"><link rel="prefetch" href="/assets/index.html-D1A_WpzI.js" as="script"><link rel="prefetch" href="/assets/index.html-BmnjpPjJ.js" as="script"><link rel="prefetch" href="/assets/index.html-BDCFZYdC.js" as="script"><link rel="prefetch" href="/assets/index.html-BqxlxPnv.js" as="script"><link rel="prefetch" href="/assets/index.html-BIiwWwyc.js" as="script"><link rel="prefetch" href="/assets/index.html-D5-RCK8G.js" as="script"><link rel="prefetch" href="/assets/index.html-BVx90f_4.js" as="script"><link rel="prefetch" href="/assets/index.html-Cp_1b9-E.js" as="script"><link rel="prefetch" href="/assets/index.html-lwFbfm4-.js" as="script"><link rel="prefetch" href="/assets/index.html-DowMLMLt.js" as="script"><link rel="prefetch" href="/assets/index.html-D_8y9hku.js" as="script"><link rel="prefetch" href="/assets/index.html-6iLbrrbl.js" as="script"><link rel="prefetch" href="/assets/index.html-Bey-5umP.js" as="script"><link rel="prefetch" href="/assets/index.html-VxxV5VVf.js" as="script"><link rel="prefetch" href="/assets/index.html-CJyartF-.js" as="script"><link rel="prefetch" href="/assets/index.html-DomtaCnN.js" as="script"><link rel="prefetch" href="/assets/waline-meta-l0sNRNKZ.js" as="script"><link rel="prefetch" href="/assets/component-ChTPDb6_.js" as="script"><link rel="prefetch" href="/assets/photoswipe.esm-SzV8tJDW.js" as="script">
+  </head>
+  <body>
+    <div id="app"><!--[--><!--[--><!--[--><span tabindex="-1"></span><a href="#main-content" class="vp-skip-link sr-only">跳至主要內容</a><!--]--><div class="theme-container external-link-icon has-toc"><!--[--><header id="navbar" class="vp-navbar"><div class="vp-navbar-start"><button type="button" class="vp-toggle-sidebar-button" title="Toggle Sidebar"><span class="icon"></span></button><!----><!--[--><a class="route-link vp-brand" href="/"><img class="vp-nav-logo" src="/logo.svg" alt><!----><span class="vp-site-name hide-in-pad">Lance</span></a><!--]--><!----></div><div class="vp-navbar-center"><!----><!--[--><nav class="vp-nav-links"><div class="vp-nav-item hide-in-mobile"><a class="route-link vp-link" href="/" aria-label="HOME"><img class="icon" src="/img/home.svg" alt aria-hidden no-view style="">HOME<!----></a></div><div class="vp-nav-item hide-in-mobile"><a class="route-link vp-link" href="/posts/blog/" aria-label="博客"><img class="icon" src="/img/finder.svg" alt aria-hidden no-view style="">博客<!----></a></div><div class="vp-nav-item hide-in-mobile"><div class="vp-dropdown-wrapper"><button type="button" class="vp-dropdown-title" aria-label="存档"><!--[--><img class="icon" src="/img/Archive.svg" alt aria-hidden no-view style="">存档<!--]--><span class="arrow"></span><ul class="vp-dropdown"><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/old%E5%AD%98%E6%A1%A3/Java/" aria-label="Java基础"><img class="icon" src="/img/java.svg" alt aria-hidden no-view style="">Java基础<!----></a></li><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/old%E5%AD%98%E6%A1%A3/GoLang/" aria-label="GoLang基础"><img class="icon" src="/img/golang.svg" alt aria-hidden no-view style="">GoLang基础<!----></a></li><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/" aria-label="数据库"><img class="icon" src="/img/数据库.svg" alt aria-hidden no-view style="">数据库<!----></a></li><li class="vp-dropdown-item"><a class="route-link active vp-link" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/" aria-label="后端"><img class="icon" src="/img/SPRINGBOOT.svg" alt aria-hidden no-view style="">后端<!----></a></li><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/" aria-label="微服务"><img class="icon" src="/img/SpringCloud.svg" alt aria-hidden no-view style="">微服务<!----></a></li><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/old%E5%AD%98%E6%A1%A3/elasticSearch/" aria-label="ELK"><img class="icon" src="/img/Elastic.svg" alt aria-hidden no-view style="">ELK<!----></a></li><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/old%E5%AD%98%E6%A1%A3/%E7%AE%97%E6%B3%95/" aria-label="算法"><img class="icon" src="/img/算法.svg" alt aria-hidden no-view style="">算法<!----></a></li></ul></button></div></div><div class="vp-nav-item hide-in-mobile"><div class="vp-dropdown-wrapper"><button type="button" class="vp-dropdown-title" aria-label="工具"><!--[--><img class="icon" src="/img/tool.svg" alt aria-hidden no-view style="">工具<!--]--><span class="arrow"></span><ul class="vp-dropdown"><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/%E5%B7%A5%E5%85%B7/Markdown.html" aria-label="Markdown"><img class="icon" src="/img/markdown.svg" alt aria-hidden no-view style="">Markdown<!----></a></li><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/%E5%B7%A5%E5%85%B7/latexMath.html" aria-label="Latex公式"><img class="icon" src="/img/latex.svg" alt aria-hidden no-view style="">Latex公式<!----></a></li><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/%E5%B7%A5%E5%85%B7/Git.html" aria-label="Git"><img class="icon" src="/img/git.svg" alt aria-hidden no-view style="">Git<!----></a></li><li class="vp-dropdown-item"><a class="route-link vp-link" href="/posts/%E5%B7%A5%E5%85%B7/Docker.html" aria-label="Docker"><img class="icon" src="/img/docker.svg" alt aria-hidden no-view style="">Docker<!----></a></li></ul></button></div></div></nav><!--]--><!----></div><div class="vp-navbar-end"><!----><!--[--><!----><div class="vp-nav-item vp-action"><a class="vp-action-link" href="https://github.com/weiruyi" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="icon github-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="github icon" name="github" style="width:1.25rem;height:1.25rem;vertical-align:middle;"><path d="M511.957 21.333C241.024 21.333 21.333 240.981 21.333 512c0 216.832 140.544 400.725 335.574 465.664 24.49 4.395 32.256-10.07 32.256-23.083 0-11.69.256-44.245 0-85.205-136.448 29.61-164.736-64.64-164.736-64.64-22.315-56.704-54.4-71.765-54.4-71.765-44.587-30.464 3.285-29.824 3.285-29.824 49.195 3.413 75.179 50.517 75.179 50.517 43.776 75.008 114.816 53.333 142.762 40.79 4.523-31.66 17.152-53.377 31.19-65.537-108.971-12.458-223.488-54.485-223.488-242.602 0-53.547 19.114-97.323 50.517-131.67-5.035-12.33-21.93-62.293 4.779-129.834 0 0 41.258-13.184 134.912 50.346a469.803 469.803 0 0 1 122.88-16.554c41.642.213 83.626 5.632 122.88 16.554 93.653-63.488 134.784-50.346 134.784-50.346 26.752 67.541 9.898 117.504 4.864 129.834 31.402 34.347 50.474 78.123 50.474 131.67 0 188.586-114.73 230.016-224.042 242.09 17.578 15.232 33.578 44.672 33.578 90.454v135.85c0 13.142 7.936 27.606 32.854 22.87C862.25 912.597 1002.667 728.747 1002.667 512c0-271.019-219.648-490.667-490.71-490.667z"></path></svg></a></div><div class="vp-nav-item hide-in-mobile"><button type="button" class="vp-color-mode-switch" id="color-mode-switch"><svg xmlns="http://www.w3.org/2000/svg" class="icon auto-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="auto icon" name="auto" style="display:block;"><path d="M512 992C246.92 992 32 777.08 32 512S246.92 32 512 32s480 214.92 480 480-214.92 480-480 480zm0-840c-198.78 0-360 161.22-360 360 0 198.84 161.22 360 360 360s360-161.16 360-360c0-198.78-161.22-360-360-360zm0 660V212c165.72 0 300 134.34 300 300 0 165.72-134.28 300-300 300z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon dark-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="dark icon" name="dark" style="display:none;"><path d="M524.8 938.667h-4.267a439.893 439.893 0 0 1-313.173-134.4 446.293 446.293 0 0 1-11.093-597.334A432.213 432.213 0 0 1 366.933 90.027a42.667 42.667 0 0 1 45.227 9.386 42.667 42.667 0 0 1 10.24 42.667 358.4 358.4 0 0 0 82.773 375.893 361.387 361.387 0 0 0 376.747 82.774 42.667 42.667 0 0 1 54.187 55.04 433.493 433.493 0 0 1-99.84 154.88 438.613 438.613 0 0 1-311.467 128z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon light-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="light icon" name="light" style="display:none;"><path d="M952 552h-80a40 40 0 0 1 0-80h80a40 40 0 0 1 0 80zM801.88 280.08a41 41 0 0 1-57.96-57.96l57.96-58a41.04 41.04 0 0 1 58 58l-58 57.96zM512 752a240 240 0 1 1 0-480 240 240 0 0 1 0 480zm0-560a40 40 0 0 1-40-40V72a40 40 0 0 1 80 0v80a40 40 0 0 1-40 40zm-289.88 88.08-58-57.96a41.04 41.04 0 0 1 58-58l57.96 58a41 41 0 0 1-57.96 57.96zM192 512a40 40 0 0 1-40 40H72a40 40 0 0 1 0-80h80a40 40 0 0 1 40 40zm30.12 231.92a41 41 0 0 1 57.96 57.96l-57.96 58a41.04 41.04 0 0 1-58-58l58-57.96zM512 832a40 40 0 0 1 40 40v80a40 40 0 0 1-80 0v-80a40 40 0 0 1 40-40zm289.88-88.08 58 57.96a41.04 41.04 0 0 1-58 58l-57.96-58a41 41 0 0 1 57.96-57.96z"></path></svg></button></div><!----><!--]--><!----><button type="button" class="vp-toggle-navbar-button" aria-label="Toggle Navbar" aria-expanded="false" aria-controls="nav-screen"><span><span class="vp-top"></span><span class="vp-middle"></span><span class="vp-bottom"></span></span></button></div></header><!----><!--]--><!----><div class="toggle-sidebar-wrapper"><span class="arrow start"></span></div><aside id="sidebar" class="vp-sidebar"><!----><ul class="vp-sidebar-links"><li><section class="vp-sidebar-group"><p class="vp-sidebar-header"><img class="icon" src="/img/java.svg" alt aria-hidden no-view style=""><span class="vp-sidebar-title">Java基础</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/" aria-label="JVM"><img class="icon" src="/img/JVM.svg" alt aria-hidden no-view style="">JVM<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/2-%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6.html" aria-label="字节码文件"><img class="icon" src="/img/JVM.svg" alt aria-hidden no-view style="">字节码文件<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/3-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8.html" aria-label="类加载器"><img class="icon" src="/img/JVM.svg" alt aria-hidden no-view style="">类加载器<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/4_%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6.html" aria-label="垃圾回收"><img class="icon" src="/img/JVM.svg" alt aria-hidden no-view style="">垃圾回收<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/10-%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81.html" aria-label="分布式锁"><img class="icon" src="/img/lock.svg" alt aria-hidden no-view style="">分布式锁<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/20_nio.html" aria-label="NIO"><img class="icon" src="/img/java.svg" alt aria-hidden no-view style="">NIO<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/21_Netty%E5%9F%BA%E7%A1%80.html" aria-label="Netty基础"><!---->Netty基础<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/22_Netty%E8%BF%9B%E9%98%B6.html" aria-label="Netty进阶"><!---->Netty进阶<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/Java/30_%E5%8F%8D%E5%B0%84%E5%92%8C%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86.html" aria-label="Java反射和动态代理详解"><img class="icon" src="/img/JVM.svg" alt aria-hidden no-view style="">Java反射和动态代理详解<!----></a></li></ul></section></li><li><section class="vp-sidebar-group"><p class="vp-sidebar-header"><img class="icon" src="/img/golang.svg" alt aria-hidden no-view style=""><span class="vp-sidebar-title">GoLang基础</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/GoLang/" aria-label="GoLang"><img class="icon" src="/img/golang.svg" alt aria-hidden no-view style="">GoLang<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/GoLang/2_go%E9%94%81%E6%9C%BA%E5%88%B6.html" aria-label="GoLang锁机制"><img class="icon" src="/img/golang.svg" alt aria-hidden no-view style="">GoLang锁机制<!----></a></li></ul></section></li><li><section class="vp-sidebar-group"><p class="vp-sidebar-header"><img class="icon" src="/img/数据库.svg" alt aria-hidden no-view style=""><span class="vp-sidebar-title">数据库</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/" aria-label="SQL语句"><img class="icon" src="/img/SQL.svg" alt aria-hidden no-view style="">SQL语句<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/2_mysql%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5.html" aria-label="MySQL主从同步"><img class="icon" src="/img/mysql.svg" alt aria-hidden no-view style="">MySQL主从同步<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/3_%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB.html" aria-label="MySQL读写分离"><img class="icon" src="/img/mysql.svg" alt aria-hidden no-view style="">MySQL读写分离<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/4_canal.html" aria-label="Canal数据同步"><img class="icon" src="/img/数据同步.svg" alt aria-hidden no-view style="">Canal数据同步<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/10_MyBatis.html" aria-label="MyBatis"><img class="icon" src="/img/mybatis.svg" alt aria-hidden no-view style="">MyBatis<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/11_MyBatisPlus.html" aria-label="MyBatisPlus"><img class="icon" src="/img/mybatisplus.svg" alt aria-hidden no-view style="">MyBatisPlus<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/15_MySQL%E9%AB%98%E7%BA%A71.html" aria-label="MySQL高级一"><img class="icon" src="/img/mysql.svg" alt aria-hidden no-view style="">MySQL高级一<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/16_mysql%E9%AB%98%E7%BA%A72.html" aria-label="MySQL高级二"><img class="icon" src="/img/mysql.svg" alt aria-hidden no-view style="">MySQL高级二<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/20_redis.html" aria-label="Redis基础"><img class="icon" src="/img/redis.svg" alt aria-hidden no-view style="">Redis基础<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/21_redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html" aria-label="Redis数据结构"><img class="icon" src="/img/redis.svg" alt aria-hidden no-view style="">Redis数据结构<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/22_redis%E5%8D%95%E6%9C%BA.html" aria-label="Redis单机"><img class="icon" src="/img/redis.svg" alt aria-hidden no-view style="">Redis单机<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/23_redis%E5%A4%9A%E6%9C%BA.html" aria-label="Redis多机"><img class="icon" src="/img/redis.svg" alt aria-hidden no-view style="">Redis多机<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E6%95%B0%E6%8D%AE%E5%BA%93/24_redis%E7%8B%AC%E7%AB%8B%E5%8A%9F%E8%83%BD.html" aria-label="Redis独立功能"><img class="icon" src="/img/redis.svg" alt aria-hidden no-view style="">Redis独立功能<!----></a></li></ul></section></li><li><section class="vp-sidebar-group"><p class="vp-sidebar-header active"><img class="icon" src="/img/SPRINGBOOT.svg" alt aria-hidden no-view style=""><span class="vp-sidebar-title">后端</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/" aria-label="Spring"><img class="icon" src="/img/spring.svg" alt aria-hidden no-view style="">Spring<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/IOC.html" aria-label="IOC"><img class="icon" src="/img/spring.svg" alt aria-hidden no-view style="">IOC<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/aop.html" aria-label="AOP"><img class="icon" src="/img/spring.svg" alt aria-hidden no-view style="">AOP<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/jwt.html" aria-label="JWT令牌以及登录验证"><img class="icon" src="/img/jwt.svg" alt aria-hidden no-view style="">JWT令牌以及登录验证<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/%E6%8B%A6%E6%88%AA%E5%99%A8%E8%BF%87%E6%BB%A4%E5%99%A8.html" aria-label="拦截器和过滤器"><img class="icon" src="/img/拦截器.svg" alt aria-hidden no-view style="">拦截器和过滤器<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/%E7%BC%93%E5%AD%98.html" aria-label="SpringCache缓存"><img class="icon" src="/img/spring.svg" alt aria-hidden no-view style="">SpringCache缓存<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/SpringTask_7.html" aria-label="SpringTask"><img class="icon" src="/img/定时任务.svg" alt aria-hidden no-view style="">SpringTask<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/websocket_8.html" aria-label="WebSocket"><img class="icon" src="/img/WebSocket.svg" alt aria-hidden no-view style="">WebSocket<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/9_%E4%BA%8B%E5%8A%A1.html" aria-label="Spring事务"><img class="icon" src="/img/spring.svg" alt aria-hidden no-view style="">Spring事务<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/10_%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E5%8E%9F%E7%90%86.html" aria-label="SpringBoot自动装配原理"><img class="icon" src="/img/SPRINGBOOT.svg" alt aria-hidden no-view style="">SpringBoot自动装配原理<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/11_springsecurity.html" aria-label="SpringSecurity"><img class="icon" src="/img/spring-security.svg" alt aria-hidden no-view style="">SpringSecurity<!----></a></li><li><a class="route-link active vp-link vp-sidebar-link vp-sidebar-page active" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/12_springsecurity2.html" aria-label="SpringSecurity进阶"><img class="icon" src="/img/spring-security.svg" alt aria-hidden no-view style="">SpringSecurity进阶<!----></a></li></ul></section></li><li><section class="vp-sidebar-group"><p class="vp-sidebar-header"><img class="icon" src="/img/SpringCloud.svg" alt aria-hidden no-view style=""><span class="vp-sidebar-title">微服务</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/" aria-label="微服务"><img class="icon" src="/img/SpringCloud.svg" alt aria-hidden no-view style="">微服务<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8.html" aria-label="服务注册与远程调用"><img class="icon" src="/img/nacos.svg" alt aria-hidden no-view style="">服务注册与远程调用<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/%E7%BB%9F%E4%B8%80%E7%BD%91%E5%85%B3%E8%B7%AF%E7%94%B1_4.html" aria-label="统一网关路由"><img class="icon" src="/img/网关.svg" alt aria-hidden no-view style="">统一网关路由<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86_5.html" aria-label="配置管理"><img class="icon" src="/img/nacos.svg" alt aria-hidden no-view style="">配置管理<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/6_%E6%9C%8D%E5%8A%A1%E4%BF%9D%E6%8A%A4.html" aria-label="服务保护"><img class="icon" src="/img/sentinel.svg" alt aria-hidden no-view style="">服务保护<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/7_%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1.html" aria-label="分布式事务"><img class="icon" src="/img/seata.svg" alt aria-hidden no-view style="">分布式事务<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/8_MQ%E5%9F%BA%E7%A1%80.html" aria-label="MQ基础"><img class="icon" src="/img/rabbitmq.svg" alt aria-hidden no-view style="">MQ基础<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/9_MQ%E9%AB%98%E7%BA%A7.html" aria-label="MQ高级"><img class="icon" src="/img/rabbitmq.svg" alt aria-hidden no-view style="">MQ高级<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/10_minio.html" aria-label="MinIO分布式文件系统"><img class="icon" src="/img/MinIO.svg" alt aria-hidden no-view style="">MinIO分布式文件系统<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/11_xxl-job.html" aria-label="XXL-JOB分布式任务调度"><img class="icon" src="/img/xxl-job.svg" alt aria-hidden no-view style="">XXL-JOB分布式任务调度<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/springcloud/12_kafka.html" aria-label="Kafka详解"><img class="icon" src="/img/Kafka.svg" alt aria-hidden no-view style="">Kafka详解<!----></a></li></ul></section></li><li><section class="vp-sidebar-group"><p class="vp-sidebar-header"><img class="icon" src="/img/Elastic.svg" alt aria-hidden no-view style=""><span class="vp-sidebar-title">ELK</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/elasticSearch/" aria-label="ELK"><img class="icon" src="/img/Elastic.svg" alt aria-hidden no-view style="">ELK<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/elasticSearch/2_es%E5%9F%BA%E7%A1%80.html" aria-label="ElasticSearch基础"><img class="icon" src="/img/es.svg" alt aria-hidden no-view style="">ElasticSearch基础<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/elasticSearch/3_esDSL.html" aria-label="ElasticSearch DSL"><img class="icon" src="/img/es.svg" alt aria-hidden no-view style="">ElasticSearch DSL<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/elasticSearch/4_elasticSearch%E4%B8%8EMySQL%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5.html" aria-label="ES与MySQL数据同步"><img class="icon" src="/img/mysql.svg" alt aria-hidden no-view style="">ES与MySQL数据同步<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/elasticSearch/5_ES%E9%9B%86%E7%BE%A4.html" aria-label="ES集群"><img class="icon" src="/img/es.svg" alt aria-hidden no-view style="">ES集群<!----></a></li></ul></section></li><li><section class="vp-sidebar-group"><p class="vp-sidebar-header"><img class="icon" src="/img/算法.svg" alt aria-hidden no-view style=""><span class="vp-sidebar-title">算法</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E7%AE%97%E6%B3%95/" aria-label="算法"><!---->算法<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E7%AE%97%E6%B3%95/1_dlx%E8%88%9E%E8%B9%88%E9%93%BE.html" aria-label="DLX舞蹈链"><!---->DLX舞蹈链<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E7%AE%97%E6%B3%95/2_A%E6%98%9F%E7%AE%97%E6%B3%95.html" aria-label="A星算法"><!---->A星算法<!----></a></li><li><a class="route-link vp-link vp-sidebar-link vp-sidebar-page" href="/posts/old%E5%AD%98%E6%A1%A3/%E7%AE%97%E6%B3%95/3_%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D.html" aria-label="字符串匹配"><!---->字符串匹配<!----></a></li></ul></section></li></ul><!----></aside><!--[--><main id="main-content" class="vp-page"><!--[--><!----><!----><nav class="vp-breadcrumb disable"></nav><div class="vp-page-title"><h1><img class="icon" src="/img/spring-security.svg" alt aria-hidden no-view style="">SpringSecurity进阶</h1><div class="page-info"><span class="page-author-info" aria-label="作者🖊" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon author-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="author icon" name="author"><path d="M649.6 633.6c86.4-48 147.2-144 147.2-249.6 0-160-128-288-288-288s-288 128-288 288c0 108.8 57.6 201.6 147.2 249.6-121.6 48-214.4 153.6-240 288-3.2 9.6 0 19.2 6.4 25.6 3.2 9.6 12.8 12.8 22.4 12.8h704c9.6 0 19.2-3.2 25.6-12.8 6.4-6.4 9.6-16 6.4-25.6-25.6-134.4-121.6-240-243.2-288z"></path></svg><span><span class="page-author-item">RuyiWei</span></span><span property="author" content="RuyiWei"></span></span><!----><span class="page-date-info" aria-label="写作日期📅" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon calendar-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="calendar icon" name="calendar"><path d="M716.4 110.137c0-18.753-14.72-33.473-33.472-33.473-18.753 0-33.473 14.72-33.473 33.473v33.473h66.993v-33.473zm-334.87 0c0-18.753-14.72-33.473-33.473-33.473s-33.52 14.72-33.52 33.473v33.473h66.993v-33.473zm468.81 33.52H716.4v100.465c0 18.753-14.72 33.473-33.472 33.473a33.145 33.145 0 01-33.473-33.473V143.657H381.53v100.465c0 18.753-14.72 33.473-33.473 33.473a33.145 33.145 0 01-33.473-33.473V143.657H180.6A134.314 134.314 0 0046.66 277.595v535.756A134.314 134.314 0 00180.6 947.289h669.74a134.36 134.36 0 00133.94-133.938V277.595a134.314 134.314 0 00-133.94-133.938zm33.473 267.877H147.126a33.145 33.145 0 01-33.473-33.473c0-18.752 14.72-33.473 33.473-33.473h736.687c18.752 0 33.472 14.72 33.472 33.473a33.145 33.145 0 01-33.472 33.473z"></path></svg><span><!----></span><meta property="datePublished" content="2024-08-01T00:00:00.000Z"></span><span class="page-pageview-info" aria-label="访问量🔢" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon eye-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="eye icon" name="eye"><path d="M992 512.096c0-5.76-.992-10.592-1.28-11.136-.192-2.88-1.152-8.064-2.08-10.816-.256-.672-.544-1.376-.832-2.08-.48-1.568-1.024-3.104-1.6-4.32C897.664 290.112 707.104 160 512 160c-195.072 0-385.632 130.016-473.76 322.592-1.056 2.112-1.792 4.096-2.272 5.856a55.512 55.512 0 00-.64 1.6c-1.76 5.088-1.792 8.64-1.632 7.744-.832 3.744-1.568 11.168-1.568 11.168-.224 2.272-.224 4.032.032 6.304 0 0 .736 6.464 1.088 7.808.128 1.824.576 4.512 1.12 6.976h-.032c.448 2.08 1.12 4.096 1.984 6.08.48 1.536.992 2.976 1.472 4.032C126.432 733.856 316.992 864 512 864c195.136 0 385.696-130.048 473.216-321.696 1.376-2.496 2.24-4.832 2.848-6.912.256-.608.48-1.184.672-1.728 1.536-4.48 1.856-8.32 1.728-8.32l-.032.032c.608-3.104 1.568-7.744 1.568-13.28zM512 672c-88.224 0-160-71.776-160-160s71.776-160 160-160 160 71.776 160 160-71.776 160-160 160z"></path></svg><span id="ArtalkPV" class="vp-pageview waline-pageview-count" data-path="/posts/old%E5%AD%98%E6%A1%A3/springboot/12_springsecurity2.html" data-page-key="/posts/old%E5%AD%98%E6%A1%A3/springboot/12_springsecurity2.html">...</span></span><span class="page-reading-time-info" aria-label="阅读时间⌛" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon timer-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="timer icon" name="timer"><path d="M799.387 122.15c4.402-2.978 7.38-7.897 7.38-13.463v-1.165c0-8.933-7.38-16.312-16.312-16.312H256.33c-8.933 0-16.311 7.38-16.311 16.312v1.165c0 5.825 2.977 10.874 7.637 13.592 4.143 194.44 97.22 354.963 220.201 392.763-122.204 37.542-214.893 196.511-220.2 389.397-4.661 5.049-7.638 11.651-7.638 19.03v5.825h566.49v-5.825c0-7.379-2.849-13.981-7.509-18.9-5.049-193.016-97.867-351.985-220.2-389.527 123.24-37.67 216.446-198.453 220.588-392.892zM531.16 450.445v352.632c117.674 1.553 211.787 40.778 211.787 88.676H304.097c0-48.286 95.149-87.382 213.728-88.676V450.445c-93.077-3.107-167.901-81.297-167.901-177.093 0-8.803 6.99-15.793 15.793-15.793 8.803 0 15.794 6.99 15.794 15.793 0 80.261 63.69 145.635 142.01 145.635s142.011-65.374 142.011-145.635c0-8.803 6.99-15.793 15.794-15.793s15.793 6.99 15.793 15.793c0 95.019-73.789 172.82-165.96 177.093z"></path></svg><span>大约 19 分钟</span><meta property="timeRequired" content="PT19M"></span><span class="page-category-info" aria-label="分类🌈" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon category-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="category icon" name="category"><path d="M148.41 106.992h282.176c22.263 0 40.31 18.048 40.31 40.31V429.48c0 22.263-18.047 40.31-40.31 40.31H148.41c-22.263 0-40.311-18.047-40.311-40.31V147.302c0-22.263 18.048-40.31 40.311-40.31zM147.556 553.478H429.73c22.263 0 40.311 18.048 40.311 40.31v282.176c0 22.263-18.048 40.312-40.31 40.312H147.555c-22.263 0-40.311-18.049-40.311-40.312V593.79c0-22.263 18.048-40.311 40.31-40.311zM593.927 106.992h282.176c22.263 0 40.31 18.048 40.31 40.31V429.48c0 22.263-18.047 40.31-40.31 40.31H593.927c-22.263 0-40.311-18.047-40.311-40.31V147.302c0-22.263 18.048-40.31 40.31-40.31zM730.22 920.502H623.926c-40.925 0-74.22-33.388-74.22-74.425V623.992c0-41.038 33.387-74.424 74.425-74.424h222.085c41.038 0 74.424 33.226 74.424 74.067v114.233c0 10.244-8.304 18.548-18.547 18.548s-18.548-8.304-18.548-18.548V623.635c0-20.388-16.746-36.974-37.33-36.974H624.13c-20.585 0-37.331 16.747-37.331 37.33v222.086c0 20.585 16.654 37.331 37.126 37.331H730.22c10.243 0 18.547 8.304 18.547 18.547 0 10.244-8.304 18.547-18.547 18.547z"></path></svg><!--[--><span class="page-category-item color1 clickable" role="navigation">Spring</span><!--]--><meta property="articleSection" content="Spring"></span><span class="page-tag-info" aria-label="标签🏷" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon tag-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="tag icon" name="tag"><path d="M939.902 458.563L910.17 144.567c-1.507-16.272-14.465-29.13-30.737-30.737L565.438 84.098h-.402c-3.215 0-5.726 1.005-7.634 2.913l-470.39 470.39a10.004 10.004 0 000 14.164l365.423 365.424c1.909 1.908 4.42 2.913 7.132 2.913s5.223-1.005 7.132-2.913l470.39-470.39c2.01-2.11 3.014-5.023 2.813-8.036zm-240.067-72.121c-35.458 0-64.286-28.828-64.286-64.286s28.828-64.285 64.286-64.285 64.286 28.828 64.286 64.285-28.829 64.286-64.286 64.286z"></path></svg><!--[--><span class="page-tag-item color1 clickable" role="navigation">Spring</span><!--]--><meta property="keywords" content="Spring"></span></div><hr></div><div class="vp-toc-placeholder"><aside id="toc"><!----><div class="vp-toc-header">此页内容<button type="button" class="print-button" title="打印"><svg xmlns="http://www.w3.org/2000/svg" class="icon print-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="print icon" name="print"><path d="M819.2 364.8h-44.8V128c0-17.067-14.933-32-32-32H281.6c-17.067 0-32 14.933-32 32v236.8h-44.8C145.067 364.8 96 413.867 96 473.6v192c0 59.733 49.067 108.8 108.8 108.8h44.8V896c0 17.067 14.933 32 32 32h460.8c17.067 0 32-14.933 32-32V774.4h44.8c59.733 0 108.8-49.067 108.8-108.8v-192c0-59.733-49.067-108.8-108.8-108.8zM313.6 160h396.8v204.8H313.6V160zm396.8 704H313.6V620.8h396.8V864zM864 665.6c0 25.6-19.2 44.8-44.8 44.8h-44.8V588.8c0-17.067-14.933-32-32-32H281.6c-17.067 0-32 14.933-32 32v121.6h-44.8c-25.6 0-44.8-19.2-44.8-44.8v-192c0-25.6 19.2-44.8 44.8-44.8h614.4c25.6 0 44.8 19.2 44.8 44.8v192z"></path></svg></button><div class="arrow end"></div></div><div class="vp-toc-wrapper"><ul class="vp-toc-list"><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level2" href="#一、统一认证入口">一、统一认证入口</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level2" href="#二、微信扫码登录">二、微信扫码登录</a></li><li><ul class="vp-toc-list"><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_1、-接入规范">1、 接入规范</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_2、接入微信登录">2、接入微信登录</a></li><!----><!--]--></ul></li><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level2" href="#三、用户授权">三、用户授权</a></li><li><ul class="vp-toc-list"><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_1、rbac">1、RBAC</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_2、资源服务授权流程">2、资源服务授权流程</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_3、授权相关的数据模型">3、授权相关的数据模型</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_4、查询用户权限">4、查询用户权限</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_6、细粒度授权">6、细粒度授权</a></li><!----><!--]--></ul></li><!--]--></ul><div class="vp-toc-marker" style="top:-1.7rem;"></div></div><!----></aside></div><!----><div class="theme-hope-content"><!--more---><h1 id="springsecurity进阶应用" tabindex="-1"><a class="header-anchor" href="#springsecurity进阶应用"><span>SpringSecurity进阶应用</span></a></h1><h2 id="一、统一认证入口" tabindex="-1"><a class="header-anchor" href="#一、统一认证入口"><span>一、统一认证入口</span></a></h2><p>目前各大网站的认证方式非常丰富：</p><ul><li>账号密码认证</li><li>手机验证码认证</li><li>扫码登录等。</li></ul><div class="hint-container info"><p class="hint-container-title">基于当前研究的Spring Security认证流程如何支持多样化的认证方式呢？</p><p><strong>1、支持账号和密码认证:</strong> 采用OAuth2协议的密码模式即可实现。</p><p><strong>2、支持手机号加验证码认证:</strong> 用户认证提交的是手机号和验证码，并不是账号和密码。</p><p><strong>3、微信扫码认证:</strong> 基于OAuth2协议与微信交互，学成在线网站向微信服务器申请到一个令牌，然后携带令牌去微信查询用户信息，查询成功则用户在学成在线项目认证通过。</p></div><p>目前我们测试通过OAuth2的密码模式，用户认证会提交账号和密码，由<code>DaoAuthenticationProvider</code>调用<code>UserDetailsService</code>的<code>loadUserByUsername()</code>方法获取<code>UserDetails</code>用户信息。在前边我们自定义了<code>UserDetailsService</code>接口实现类，通过<code>loadUserByUsername()</code>方法根据账号查询用户信息。</p><p>而不同的认证方式提交的数据不一样，比如：手机加验证码方式会提交手机号和验证码，账号密码方式会提交账号、密码、验证码。</p><p>我们可以在<code>loadUserByUsername()</code>方法上作文章，<strong>将用户原来提交的账号数据改为提交json数据</strong>，json数据可以扩展不同认证方式所提交的各种参数。</p><p>首先创建一个DTO类表示认证的参数：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Data
+public class AuthParamsDto {
+
+    private String username; //用户名
+    private String password; //域  用于扩展
+    private String cellphone;//手机号
+    private String checkcode;//验证码
+    private String checkcodekey;//验证码key
+    private String authType; // 认证的类型   password:用户名密码模式类型    sms:短信模式类型
+    private Map&lt;String, Object&gt; payload = new HashMap&lt;&gt;();//附加数据，作为扩展，不同认证类型可拥有不同的附加数据。如认证类型为短信时包含smsKey : sms:3d21042d054548b08477142bbca95cfa; 所有情况下都包含clientId
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>此时<code>loadUserByUsername()</code>方法可以修改如下：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Slf4j
+@Service
+public class UserServiceImpl implements UserDetailsService {
+
+    @Autowired
+    XcUserMapper xcUserMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        AuthParamsDto authParamsDto = null;
+        try {
+            //将认证参数转为AuthParamsDto类型
+            authParamsDto = JSON.parseObject(s, AuthParamsDto.class);
+        } catch (Exception e) {
+            log.info(&quot;认证请求不符合项目要求:{}&quot;,s);
+            throw new RuntimeException(&quot;认证请求数据格式不对&quot;);
+        }
+        //账号
+        String username = authParamsDto.getUsername();
+        XcUser user = xcUserMapper.selectOne(new LambdaQueryWrapper&lt;XcUser&gt;().eq(XcUser::getUsername, username));
+        if(user==null){
+            //返回空表示用户不存在
+            return null;
+        }
+        //取出数据库存储的正确密码
+        String password  =user.getPassword();
+        //用户权限,如果不加报Cannot pass a null GrantedAuthority collection
+        String[] authorities = {&quot;p1&quot;};
+        //将user对象转json
+        String userString = JSON.toJSONString(user);
+        //创建UserDetails对象
+        UserDetails userDetails = User.withUsername(userString).password(password).authorities(authorities).build();
+
+        return userDetails;
+    }
+
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>原来的<code>DaoAuthenticationProvider</code> 会进行密码校验，现在重新定义<code>DaoAuthenticationProviderCustom</code>类，重写类的<code>additionalAuthenticationChecks</code>方法。</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Slf4j
+@Component
+public class DaoAuthenticationProviderCustom extends DaoAuthenticationProvider {
+
+
+ @Autowired
+ public void setUserDetailsService(UserDetailsService userDetailsService) {
+  super.setUserDetailsService(userDetailsService);
+ }
+
+
+ //屏蔽密码对比
+ protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+
+
+ }
+
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>修改WebSecurityConfig类指定daoAuthenticationProviderCustom</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Autowired
+DaoAuthenticationProviderCustom daoAuthenticationProviderCustom;
+
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.authenticationProvider(daoAuthenticationProviderCustom);
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>此时可以重启认证服务，测试申请令牌接口，传入的账号信息改为json数据，如下：</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>################扩展认证请求参数后######################
+###密码模式
+POST {{auth_host}}/auth/oauth/token?client_id=XcWebApp&amp;client_secret=XcWebApp&amp;grant_type=password&amp;username={&quot;username&quot;:&quot;stu1&quot;,&quot;authType&quot;:&quot;password&quot;,&quot;password&quot;:&quot;111111&quot;}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>经过测试发现<code>loadUserByUsername()</code>方法可以正常接收到认证请求中的json数据。有了这些认证参数我们可以定义一个认证Service接口去进行各种方式的认证。</p><p>定义用户信息，为了扩展性让它继承XcUser</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Data
+public class XcUserExt extends XcUser {
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>定义认证Service 接口,不同认证方法实现类统一以<code>authType + &quot;_authservice&quot;</code>命名</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>public interface AuthService {
+   XcUserExt execute(AuthParamsDto authParamsDto);
+
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>修改UserServiceImpl类，根据认证方式使用不同的认证bean,<code>loadUserByUsername()</code>修改如下,</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Slf4j
+@Service
+public class UserServiceImpl implements UserDetailsService {
+
+    @Autowired
+    XcUserMapper xcUserMapper;
+
+    @Autowired
+    ApplicationContext applicationContext;
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+
+        AuthParamsDto authParamsDto = null;
+        try {
+            //将认证参数转为AuthParamsDto类型
+            authParamsDto = JSON.parseObject(s, AuthParamsDto.class);
+        } catch (Exception e) {
+            log.info(&quot;认证请求不符合项目要求:{}&quot;,s);
+            throw new RuntimeException(&quot;认证请求数据格式不对&quot;);
+        }
+
+        //认证方法
+        String authType = authParamsDto.getAuthType();
+        AuthService authService =  applicationContext.getBean(authType + &quot;_authservice&quot;,AuthService.class);
+        XcUserExt user = authService.execute(authParamsDto);
+
+        return getUserPrincipal(user);
+    }
+
+    public UserDetails getUserPrincipal(XcUserExt user){
+        //用户权限,如果不加报Cannot pass a null GrantedAuthority collection
+        String[] authorities = {&quot;p1&quot;};
+        String password = user.getPassword();
+        //为了安全在令牌中不放密码
+        user.setPassword(null);
+        //将user对象转json
+        String userString = JSON.toJSONString(user);
+        //创建UserDetails对象
+        UserDetails userDetails = User.withUsername(userString).password(password ).authorities(authorities).build();
+        return userDetails;
+    }
+
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>到此我们基于Spring Security认证流程修改为如下：</p><figure><img src="/image/spring/spring10.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>上节定义了AuthService认证接口，下边实现该接口实现账号密码认证</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>// 以 authType + &quot;_authservice&quot; 命名
+@Service(&quot;password_authservice&quot;)
+public class PasswordAuthServiceImpl implements AuthService {
+
+ @Autowired
+ XcUserMapper xcUserMapper;
+
+ @Autowired
+ PasswordEncoder passwordEncoder;
+
+
+ @Override
+ public XcUserExt execute(AuthParamsDto authParamsDto) {
+
+  //账号
+  String username = authParamsDto.getUsername();
+  XcUser user = xcUserMapper.selectOne(new LambdaQueryWrapper&lt;XcUser&gt;().eq(XcUser::getUsername, username));
+  if(user==null){
+   //返回空表示用户不存在
+   throw new RuntimeException(&quot;账号不存在&quot;);
+  }
+  XcUserExt xcUserExt = new XcUserExt();
+  BeanUtils.copyProperties(user,xcUserExt);
+  //校验密码
+  //取出数据库存储的正确密码
+  String passwordDb  =user.getPassword();
+  String passwordForm = authParamsDto.getPassword();
+  boolean matches = passwordEncoder.matches(passwordForm, passwordDb);
+  if(!matches){
+   throw new RuntimeException(&quot;账号或密码错误&quot;);
+  }
+  return xcUserExt;
+ }
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h2 id="二、微信扫码登录" tabindex="-1"><a class="header-anchor" href="#二、微信扫码登录"><span>二、微信扫码登录</span></a></h2><h3 id="_1、-接入规范" tabindex="-1"><a class="header-anchor" href="#_1、-接入规范"><span>1、 接入规范</span></a></h3><h4 id="_1-接入流程" tabindex="-1"><a class="header-anchor" href="#_1-接入流程"><span>1）接入流程</span></a></h4><p>微信扫码登录基于OAuth2协议的授权码模式，<a href="https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html" target="_blank" rel="noopener noreferrer">接口文档</a></p><p>流程如下：</p><figure><img src="/image/spring/spring11.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>第三方应用获取access_token令牌后即可请求微信获取用户的信息，成功获取到用户的信息表示用户在第三方应用认证成功。</p><h4 id="_2-请求获取授权码" tabindex="-1"><a class="header-anchor" href="#_2-请求获取授权码"><span>2）请求获取授权码</span></a></h4><p>第三方使用网站应用授权登录前请注意已获取相应网页授权作用域（scope=snsapi_login），则可以通过在 PC 端打开以下链接<code>https://open.weixin.qq.com/connect/qrconnect?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect</code>若提示“该链接无法访问”，请检查参数是否填写错误，如<code>redirect_uri</code>的域名与审核时填写的授权域名不一致或 scope 不为snsapi_login。</p><p><strong>参数说明</strong></p><figure><img src="/image/spring/spring12.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p><strong>返回说明</strong></p><p><strong>用户允许授权后</strong>，将会重定向到redirect_uri的网址上，并且带上 code 和state参数</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>redirect_uri?code=CODE&amp;state=STATE
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div></div></div><p>若用户禁止授权，则不会发生重定向。</p><p>为了满足网站更定制化的需求，我们还提供了第二种获取 code 的方式，支持网站将微信登录二维码内嵌到自己页面中，用户使用微信扫码授权后通过 JS 将code返回给网站。 JS微信登录主要用途：网站希望用户在网站内就能完成登录，无需跳转到微信域下登录后再返回，提升微信登录的流畅性与成功率。 网站内嵌二维码微信登录 JS 实现办法：</p><p><strong>步骤1：</strong> 在页面中先引入如下 JS 文件（支持https）：</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div></div></div><p><strong>步骤2：</strong> 在需要使用微信登录的地方实例以下 JS 对象：</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code> var obj = new WxLogin({
+ self_redirect:true,
+ id:&quot;login_container&quot;, 
+ appid: &quot;&quot;, 
+ scope: &quot;&quot;, 
+ redirect_uri: &quot;&quot;,
+  state: &quot;&quot;,
+ style: &quot;&quot;,
+ href: &quot;&quot;
+ });
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><figure><img src="/image/spring/spring13.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><figure><img src="/image/spring/spring14.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><h4 id="_3-通过-code-获取access-token" tabindex="-1"><a class="header-anchor" href="#_3-通过-code-获取access-token"><span>3）通过 code 获取access_token</span></a></h4><p>通过 code 获取access_token</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&amp;secret=SECRET&amp;code=CODE&amp;grant_type=authorization_code
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div></div></div><figure><img src="/image/spring/spring15.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p><strong>返回说明</strong></p><p>正确的返回：</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>{ 
+&quot;access_token&quot;:&quot;ACCESS_TOKEN&quot;, 
+&quot;expires_in&quot;:7200, 
+&quot;refresh_token&quot;:&quot;REFRESH_TOKEN&quot;,
+&quot;openid&quot;:&quot;OPENID&quot;, 
+&quot;scope&quot;:&quot;SCOPE&quot;,
+&quot;unionid&quot;: &quot;o6_bmasdasdsad6_2sgVt7hMZOPfL&quot;
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><figure><img src="/image/spring/spring16.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>错误返回样例：</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>{&quot;errcode&quot;:40029,&quot;errmsg&quot;:&quot;invalid code&quot;}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div></div></div><h4 id="_4-通过access-token调用接口" tabindex="-1"><a class="header-anchor" href="#_4-通过access-token调用接口"><span>4）通过access_token调用接口</span></a></h4><p>获取access_token后，进行接口调用，有以下前提：</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>access_token有效且未超时；
+微信用户已授权给第三方应用帐号相应接口作用域（scope）。
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div></div></div><p>对于接口作用域（scope），能调用的接口有以下：</p><figure><img src="/image/spring/spring17.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>其中<code>snsapi_base</code>属于基础接口，若应用已拥有其它 scope 权限，则默认拥有<code>snsapi_base</code>的权限。使用<code>snsapi_base</code>可以让移动端网页授权绕过跳转授权登录页请求用户授权的动作，直接跳转第三方网页带上授权临时票据（code），但会使得用户已授权作用域（scope）仅为snsapi_base，从而导致无法获取到需要用户授权才允许获得的数据和基础功能。 接口调用方法可查阅<a href="https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Authorized_Interface_Calling_UnionID.html" target="_blank" rel="noopener noreferrer">《微信授权关系接口调用指南》</a></p><p>获取用户信息<a href="https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Authorized_Interface_Calling_UnionID.html" target="_blank" rel="noopener noreferrer">接口文档</a></p><p>接口地址</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>http请求方式: GET
+https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&amp;openid=OPENID
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div></div></div><p>如下：</p><figure><img src="/image/spring/spring18.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>响应：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>{
+&quot;openid&quot;:&quot;OPENID&quot;,
+&quot;nickname&quot;:&quot;NICKNAME&quot;,
+&quot;sex&quot;:1,
+&quot;province&quot;:&quot;PROVINCE&quot;,
+&quot;city&quot;:&quot;CITY&quot;,
+&quot;country&quot;:&quot;COUNTRY&quot;,
+&quot;headimgurl&quot;: &quot;https://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0&quot;,
+&quot;privilege&quot;:[
+&quot;PRIVILEGE1&quot;,
+&quot;PRIVILEGE2&quot;
+],
+&quot;unionid&quot;: &quot; o6_bmasdasdsad6_2sgVt7hMZOPfL&quot;
+
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>说明如下：</p><div class="language-Plain line-numbers-mode" data-ext="Plain" data-title="Plain"><pre class="language-Plain"><code>参数            说明
+openid        普通用户的标识，对当前开发者帐号唯一
+nickname        普通用户昵称
+sex            普通用户性别，1为男性，2为女性
+province        普通用户个人资料填写的省份
+city            普通用户个人资料填写的城市
+country        国家，如中国为CN
+headimgurl        用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空
+privilege        用户特权信息，json数组，如微信沃卡用户为（chinaunicom）
+unionid          用户统一标识。针对一个微信开放平台帐号下的应用，同一用户的 unionid 是唯一的。
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="_2、接入微信登录" tabindex="-1"><a class="header-anchor" href="#_2、接入微信登录"><span>2、接入微信登录</span></a></h3><p>根据OAuth2协议授权码流程，结合本项目自身特点，分析接入微信扫码登录的流程如下：</p><figure><img src="/image/spring/spring19.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>本项目认证服务需要做哪些事？</p><p>1、需要定义接口接收微信下发的授权码。</p><p>2、收到授权码调用微信接口申请令牌。</p><p>3、申请到令牌调用微信获取用户信息</p><p>4、获取用户信息成功将其写入本项目用户中心数据库。</p><p>5、最后重定向到浏览器自动登录。</p><h4 id="_1-定义接口" tabindex="-1"><a class="header-anchor" href="#_1-定义接口"><span>1） 定义接口</span></a></h4><p>参考接口规范中“请求获取授权码” 定义接收微信下发的授权码接口，</p><p>定义WxLoginController类，如下：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Slf4j
+@Controller
+public class WxLoginController {
+
+    @RequestMapping(&quot;/wxLogin&quot;)
+    public String wxLogin(String code, String state) throws IOException {
+        log.debug(&quot;微信扫码回调,code:{},state:{}&quot;,code,state);
+        //请求微信申请令牌，拿到令牌查询用户信息，将用户信息写入本项目数据库
+        XcUser xcUser = new XcUser();
+        //暂时硬编写，目的是调试环境
+        xcUser.setUsername(&quot;t1&quot;);
+        if(xcUser==null){
+            return &quot;redirect:http://www.51xuecheng.cn/error.html&quot;;
+        }
+        String username = xcUser.getUsername();
+        return &quot;redirect:http://www.51xuecheng.cn/sign.html?username=&quot;+username+&quot;&amp;authType=wx&quot;;
+    }
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>定义微信认证的service</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Slf4j
+@Service(&quot;wx_authservice&quot;)
+public class WxAuthServiceImpl implements AuthService {
+
+    @Autowired
+    XcUserMapper xcUserMapper;
+
+    @Override
+    public XcUserExt execute(AuthParamsDto authParamsDto) {
+
+        //账号
+        String username = authParamsDto.getUsername();
+        XcUser user = xcUserMapper.selectOne(new LambdaQueryWrapper&lt;XcUser&gt;().eq(XcUser::getUsername, username));
+        if(user==null){
+            //返回空表示用户不存在
+            throw new RuntimeException(&quot;账号不存在&quot;);
+        }
+        XcUserExt xcUserExt = new XcUserExt();
+        BeanUtils.copyProperties(user,xcUserExt);
+        return xcUserExt;
+    }
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h4 id="_2-接口环境测试" tabindex="-1"><a class="header-anchor" href="#_2-接口环境测试"><span>2）接口环境测试</span></a></h4><p>接口定义好下边进行测试下，主要目的是测试接口调度的环境。</p><p>1、启动内网穿透工具</p><p>2、在/wxLogin接口中打断点</p><p>3、打开前端微信扫码页面，点击微信图标打开二维码，用户扫码，确认授权此时正常进入 /wxLogin 方法，最后跳转到http://www.51xuecheng.cn/sign.html?username=t1&amp;authType=wx。</p><h4 id="_3-接入微信认证" tabindex="-1"><a class="header-anchor" href="#_3-接入微信认证"><span>3）接入微信认证</span></a></h4><p>接下来请求微信申请令牌。</p><p>1、使用restTemplate请求微信，配置RestTemplate bean</p><p>在启动类配置restTemplate</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>    @Bean
+    RestTemplate restTemplate(){
+        RestTemplate restTemplate = new RestTemplate(new OkHttp3ClientHttpRequestFactory());
+        return  restTemplate;
+    }
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>2、定义与微信认证的service接口：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>public interface WxAuthService {
+
+    public XcUser wxAuth(String code);
+
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>3、下边在controller中调用wxAuth接口：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Slf4j
+@Controller
+public class WxLoginController {
+
+    @Autowired
+    WxAuthService wxAuthService;
+
+    @RequestMapping(&quot;/wxLogin&quot;)
+    public String wxLogin(String code, String state) throws IOException {
+        log.debug(&quot;微信扫码回调,code:{},state:{}&quot;,code,state);
+        //请求微信申请令牌，拿到令牌查询用户信息，将用户信息写入本项目数据库
+        XcUser xcUser = wxAuthService.wxAuth(code);
+        if(xcUser==null){
+            return &quot;redirect:http://www.51xuecheng.cn/error.html&quot;;
+        }
+        String username = xcUser.getUsername();
+        return &quot;redirect:http://www.51xuecheng.cn/sign.html?username=&quot;+username+&quot;&amp;authType=wx&quot;;
+    }
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>4、在WxAuthService 的wxAuth方法中实现申请令牌、查询用户信息等内容。</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Slf4j
+@Service(&quot;wx_authservice&quot;)
+public class WxAuthServiceImpl implements AuthService, WxAuthService {
+@Autowired
+XcUserMapper xcUserMapper;
+@Autowired
+RestTemplate restTemplate;
+
+@Value(&quot;${weixin.appid}&quot;)
+String appid;
+@Value(&quot;${weixin.secret}&quot;)
+String secret;
+
+public XcUser wxAuth(String code){
+
+    //收到code调用微信接口申请access_token
+    Map&lt;String, String&gt; access_token_map = getAccess_token(code);
+    if(access_token_map==null){
+        return null;
+    }
+    System.out.println(access_token_map);
+    String openid = access_token_map.get(&quot;openid&quot;);
+    String access_token = access_token_map.get(&quot;access_token&quot;);
+    //拿access_token查询用户信息
+    Map&lt;String, String&gt; userinfo = getUserinfo(access_token, openid);
+    if(userinfo==null){
+        return null;
+    }
+    //添加用户到数据库
+    XcUser xcUser = null;
+    
+    return xcUser;
+}
+
+/**
+ * 申请访问令牌,响应示例
+ {
+ &quot;access_token&quot;:&quot;ACCESS_TOKEN&quot;,
+ &quot;expires_in&quot;:7200,
+ &quot;refresh_token&quot;:&quot;REFRESH_TOKEN&quot;,
+ &quot;openid&quot;:&quot;OPENID&quot;,
+ &quot;scope&quot;:&quot;SCOPE&quot;,
+ &quot;unionid&quot;: &quot;o6_bmasdasdsad6_2sgVt7hMZOPfL&quot;
+ }
+*/
+private Map&lt;String,String&gt; getAccess_token(String code) {
+
+    String wxUrl_template = &quot;https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&amp;secret=%s&amp;code=%s&amp;grant_type=authorization_code&quot;;
+    //请求微信地址
+    String wxUrl = String.format(wxUrl_template, appid, secret, code);
+
+    log.info(&quot;调用微信接口申请access_token, url:{}&quot;, wxUrl);
+
+    ResponseEntity&lt;String&gt; exchange = restTemplate.exchange(wxUrl, HttpMethod.POST, null, String.class);
+
+    String result = exchange.getBody();
+    log.info(&quot;调用微信接口申请access_token: 返回值:{}&quot;, result);
+    Map&lt;String,String&gt; resultMap = JSON.parseObject(result, Map.class);
+
+    return resultMap;
+}
+
+/**获取用户信息，示例如下：
+ {
+ &quot;openid&quot;:&quot;OPENID&quot;,
+ &quot;nickname&quot;:&quot;NICKNAME&quot;,
+ &quot;sex&quot;:1,
+ &quot;province&quot;:&quot;PROVINCE&quot;,
+ &quot;city&quot;:&quot;CITY&quot;,
+ &quot;country&quot;:&quot;COUNTRY&quot;,
+ &quot;headimgurl&quot;: &quot;https://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0&quot;,
+ &quot;privilege&quot;:[
+ &quot;PRIVILEGE1&quot;,
+ &quot;PRIVILEGE2&quot;
+ ],
+ &quot;unionid&quot;: &quot; o6_bmasdasdsad6_2sgVt7hMZOPfL&quot;
+ }
+*/
+private Map&lt;String,String&gt; getUserinfo(String access_token,String openid) {
+
+    String wxUrl_template = &quot;https://api.weixin.qq.com/sns/userinfo?access_token=%s&amp;openid=%s&quot;;
+    //请求微信地址
+    String wxUrl = String.format(wxUrl_template, access_token,openid);
+
+    log.info(&quot;调用微信接口申请access_token, url:{}&quot;, wxUrl);
+
+    ResponseEntity&lt;String&gt; exchange = restTemplate.exchange(wxUrl, HttpMethod.POST, null, String.class);
+
+    //防止乱码进行转码
+    String result = new     String(exchange.getBody().getBytes(StandardCharsets.ISO_8859_1),StandardCharsets.UTF_8);
+    log.info(&quot;调用微信接口申请access_token: 返回值:{}&quot;, result);
+    Map&lt;String,String&gt; resultMap = JSON.parseObject(result, Map.class);
+
+    return resultMap;
+}
+....
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>测试获取用户信息</p><p>1、在获取用户信息处打断点</p><p>2、进入http://www.51xuecheng.cn/wxsign.html</p><p>3、手机扫码授权</p><h4 id="_4-保存用户信息" tabindex="-1"><a class="header-anchor" href="#_4-保存用户信息"><span>4）保存用户信息</span></a></h4><p>向数据库保存用户信息，如果用户不存在将其保存在数据库。</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Autowired
+XcUserRoleMapper xcUserRoleMapper;
+
+@Transactional
+public XcUser addWxUser(Map userInfo_map){
+    String unionid = userInfo_map.get(&quot;unionid&quot;).toString();
+    //根据unionid查询数据库
+    XcUser xcUser = xcUserMapper.selectOne(new LambdaQueryWrapper&lt;XcUser&gt;().eq(XcUser::getWxUnionid, unionid));
+    if(xcUser!=null){
+        return xcUser;
+    }
+    String userId = UUID.randomUUID().toString();
+    xcUser = new XcUser();
+    xcUser.setId(userId);
+    xcUser.setWxUnionid(unionid);
+    //记录从微信得到的昵称
+    xcUser.setNickname(userInfo_map.get(&quot;nickname&quot;).toString());
+    xcUser.setUserpic(userInfo_map.get(&quot;headimgurl&quot;).toString());
+    xcUser.setName(userInfo_map.get(&quot;nickname&quot;).toString());
+    xcUser.setUsername(unionid);
+    xcUser.setPassword(unionid);
+    xcUser.setUtype(&quot;101001&quot;);//学生类型
+    xcUser.setStatus(&quot;1&quot;);//用户状态
+    xcUser.setCreateTime(LocalDateTime.now());
+    xcUserMapper.insert(xcUser);
+    XcUserRole xcUserRole = new XcUserRole();
+    xcUserRole.setId(UUID.randomUUID().toString());
+    xcUserRole.setUserId(userId);
+    xcUserRole.setRoleId(&quot;17&quot;);//学生角色
+    xcUserRoleMapper.insert(xcUserRole);
+    return xcUser;
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>调用保存用户信息</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Autowired
+WxAuthServiceImpl currentProxy;
+
+public XcUser wxAuth(String code){
+
+    //收到code调用微信接口申请access_token
+    Map&lt;String, String&gt; access_token_map = getAccess_token(code);
+    if(access_token_map==null){
+        return null;
+    }
+    System.out.println(access_token_map);
+    String openid = access_token_map.get(&quot;openid&quot;);
+    String access_token = access_token_map.get(&quot;access_token&quot;);
+    //拿access_token查询用户信息
+    Map&lt;String, String&gt; userinfo = getUserinfo(access_token, openid);
+    if(userinfo==null){
+        return null;
+    }
+    //将用户信息保存到数据库
+    XcUser xcUser = currentProxy.addWxUser(userinfo);
+    return xcUser;
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>测试保存用户信息</p><p>1、在保存用户信息处打断点</p><p>2、进入http://www.51xuecheng.cn/wxsign.html</p><p>3、手机扫码授权</p><p>4、自动跳转到登录页面，提交认证成功。</p><h2 id="三、用户授权" tabindex="-1"><a class="header-anchor" href="#三、用户授权"><span>三、用户授权</span></a></h2><h3 id="_1、rbac" tabindex="-1"><a class="header-anchor" href="#_1、rbac"><span>1、RBAC</span></a></h3><p>如何实现授权？业界通常基于RBAC实现授权。</p><div class="hint-container info"><p class="hint-container-title">RBAC分为两种方式：</p><ul><li><p>基于角色的访问控制（Role-Based Access Control）</p></li><li><p>基于资源的访问控制（Resource-Based Access Control）</p></li></ul></div><ul><li><ol><li>角色的访问控制（Role-Based Access Control）是按角色进行授权，比如：主体的角色为总经理可以查询企业运营报表，查询员工工资信息等，访问控制流程如下：</li></ol></li></ul><figure><img src="/image/spring/spring20.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>根据上图中的判断逻辑，授权代码可表示如下：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>if(主体.hasRole(&quot;总经理角色id&quot;)){
+查询工资
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>如果上图中查询工资所需要的角色变化为总经理和部门经理，此时就需要修改判断逻辑为“判断用户的角色是否是总经理或部门经理”，修改代码如下：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>if(主体.hasRole(&quot;总经理角色id&quot;) ||  主体.hasRole(&quot;部门经理角色id&quot;)){
+    查询工资
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>根据上边的例子发现，当需要修改角色的权限时就需要修改授权的相关代码，系统可扩展性差。</p><ul><li><ol start="2"><li>基于资源的访问控制（Resource-Based Access Control）是按资源（或权限）进行授权，比如：用户必须具有查询工资权限才可以查询员工工资信息等，访问控制流程如下：</li></ol></li></ul><figure><img src="/image/spring/spring21.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>根据上图中的判断，授权代码可以表示为：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>if(主体.hasPermission(&quot;查询工资权限标识&quot;)){
+    查询工资
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><div class="hint-container important"><p class="hint-container-title">优点</p><p>系统设计时定义好查询工资的权限标识，即使查询工资所需要的角色变化为总经理和部门经理也不需要修改授权代码，系统可扩展性强。</p></div><h3 id="_2、资源服务授权流程" tabindex="-1"><a class="header-anchor" href="#_2、资源服务授权流程"><span>2、资源服务授权流程</span></a></h3><p>本项目在资源服务内部进行授权，基于资源的授权模式，因为接口在资源服务，通过在接口处添加授权注解实现授权。</p><p><strong>1）首先配置nginx代理</strong></p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>   http {
+    server_names_hash_bucket_size 64;
+    ...
+   
+   #前端开发服务
+  upstream uidevserver{
+    server 127.0.0.1:8601 weight=10;
+  } 
+   server {
+        listen       80;
+        server_name  teacher.51xuecheng.cn;
+        #charset koi8-r;
+        ssi on;
+        ssi_silent_errors on;
+        #access_log  logs/host.access.log  main;
+        #location / {
+         #   alias   D:/itcast2022/xc_edu3.0/code_1/dist/;
+         #   index  index.html index.htm;
+        #}
+        location / {
+            proxy_pass   http://uidevserver;
+        }
+
+        location /api/ {
+                proxy_pass http://gatewayserver/;
+        } 
+        
+        
+   }
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>加载nginx 配置。</p><p><strong>2）在资源服务集成Spring Security</strong></p><p>在需要授权的接口处使用<code>@PreAuthorize(&quot;hasAuthority(&#39;权限标识符&#39;)&quot;)</code>进行控制</p><p>下边代码指定/course/list接口需要拥有<code>xc_teachmanager_course_list </code>权限。</p><div class="language-java line-numbers-mode" data-ext="java" data-title="java"><pre class="language-java"><code> 		<span class="token annotation punctuation">@PostMapping</span><span class="token punctuation">(</span><span class="token string">&quot;list&quot;</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@PreAuthorize</span><span class="token punctuation">(</span><span class="token string">&quot;hasAuthority(&#39;xc_teachmanager_course_list&#39;)&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">PageResult</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">CourseBase</span><span class="token punctuation">&gt;</span></span> <span class="token function">list</span><span class="token punctuation">(</span><span class="token class-name">PageParams</span> pageParams<span class="token punctuation">,</span><span class="token annotation punctuation">@RequestBody</span><span class="token punctuation">(</span>required <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span> 			<span class="token class-name">QueryCourseParamsDTO</span> queryCourseParamsDTO<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>设置了@PreAuthorize表示执行此方法需要授权，如果当前用户请求接口没有权限则抛出异常</p><p><code>org.springframework.security.access.AccessDeniedException: 不允许访问</code></p><p><strong>3）在统一异常处理处解析此异常信息</strong></p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@ResponseBody
+@ExceptionHandler(Exception.class)
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+public RestErrorResponse exception(Exception e) {
+
+   log.error(&quot;【系统异常】{}&quot;,e.getMessage(),e);
+   e.printStackTrace();
+   if(e.getMessage().equals(&quot;不允许访问&quot;)){   # 没有权限时候的错误信息
+      return new RestErrorResponse(&quot;没有操作此功能的权限&quot;);
+   }
+   return new RestErrorResponse(CommonError.UNKOWN_ERROR.getErrMessage());
+
+
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p><strong>4）重启资源服务进行测试</strong></p><p>使用教学机构用户登录系统，这里使用t1用户登录，账号:t1、密码：111111，登录成功，点击“教学机构”,当用户没有权限时页面提示：没有操作此功能的权限。</p><h3 id="_3、授权相关的数据模型" tabindex="-1"><a class="header-anchor" href="#_3、授权相关的数据模型"><span>3、授权相关的数据模型</span></a></h3><p>如何给用户分配权限呢？首先要学习数据模型，本项目授权相关的数据表如下：</p><figure><img src="/image/spring/spring22.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><div class="hint-container tip"><p class="hint-container-title">说明如下：</p><p><code>xc_user</code>：用户表，存储了系统用户信息，用户类型包括：学生、老师、管理员等</p><p><code>xc_role</code>：角色表，存储了系统的角色信息，学生、老师、教学管理员、系统管理员等。</p><p><code>xc_user_role</code>：用户角色表，一个用户可拥有多个角色，一个角色可被多个用户所拥有</p><p><code>xc_menu</code>:模块表，记录了菜单及菜单下的权限</p><p><code>xc_permission</code>:角色权限表，一个角色可拥有多个权限，一个权限可被多个角色所拥有</p></div><p>本项目要求掌握基于权限数据模型（5张数据表），要求在数据库中操作完成给用户分配权限、查询用户权限等需求。</p><ul><li><strong>1）查询用户所拥有的权限</strong></li></ul><p>步骤：查询用户的id-&gt;查询用户所拥有的角色-&gt;查询用户所拥有的权限</p><p>例子：</p><p><code>SELECT * FROM xc_menu WHERE id IN( SELECT menu_id FROM xc_permission WHERE role_id IN( SELECT role_id FROM xc_user_role WHERE user_id = &#39;49&#39; ) )</code></p><ul><li><p><strong>2）给用户分配权限</strong></p><ul><li><p>a）添加权限</p><p>查询用户的id-&gt;查询权限的id-&gt;查询用户的角色，如果没有角色需要先给用户指定角色-&gt;向角色权限表添加记录</p></li><li><p>b）删除用户权限</p></li></ul></li></ul><p>​ 本项目是基于角色分配权限，如果要删除用户的权限可以给用户换角色，那么新角色下的权限就是用户的权限；如果不换用户的角色可以删除角色下的权限即删除角色权限关系表相应记录，这样操作是将角色下的权限删除，属于该角色的用户都将删除此权限。</p><h3 id="_4、查询用户权限" tabindex="-1"><a class="header-anchor" href="#_4、查询用户权限"><span>4、查询用户权限</span></a></h3><p>使用Spring Security进行授权，首先在生成jwt前会查询用户的权限，如下图：</p><figure><img src="/image/spring/spring23.png" alt="" tabindex="0" loading="lazy"><figcaption></figcaption></figure><p>接下来需要修改UserServiceImpl和PasswordAuthServiceImpl从数据库查询用户的权限。</p><p><strong>1）定义mapper接口</strong></p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>public interface XcMenuMapper extends BaseMapper&lt;XcMenu&gt; {
+    @Select(&quot;SELECT    * FROM xc_menu WHERE id IN (SELECT menu_id FROM xc_permission WHERE role_id IN ( SELECT role_id FROM xc_user_role WHERE user_id = #{userId} ))&quot;)
+    List&lt;XcMenu&gt; selectPermissionByUserId(@Param(&quot;userId&quot;) String userId);
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p><strong>2）修改<code>PasswordAuthServiceImpl</code></strong></p><p>修改<code>UserServiceImpl</code>类的<code>getUserPrincipal</code>方法，查询权限信息</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>//查询用户身份
+public UserDetails getUserPrincipal(XcUserExt user){
+    String password = user.getPassword();
+    //查询用户权限
+    List&lt;XcMenu&gt; xcMenus = menuMapper.selectPermissionByUserId(user.getId());
+    List&lt;String&gt; permissions = new ArrayList&lt;&gt;();
+    if(xcMenus.size()&lt;=0){
+        //用户权限,如果不加则报Cannot pass a null GrantedAuthority collection
+        permissions.add(&quot;p1&quot;);
+    }else{
+        xcMenus.forEach(menu-&gt;{
+            permissions.add(menu.getCode());
+        });
+    }
+    //将用户权限放在XcUserExt中
+    user.setPermissions(permissions);
+
+    //为了安全在令牌中不放密码
+    user.setPassword(null);
+    //将user对象转json
+    String userString = JSON.toJSONString(user);
+    String[] authorities = permissions.toArray(new String[0]);
+    UserDetails userDetails = User.withUsername(userString).password(password).authorities(authorities).build();
+    return userDetails;
+
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="_6、细粒度授权" tabindex="-1"><a class="header-anchor" href="#_6、细粒度授权"><span>6、细粒度授权</span></a></h3><h4 id="_1-什么是细粒度授权" tabindex="-1"><a class="header-anchor" href="#_1-什么是细粒度授权"><span>1）什么是细粒度授权</span></a></h4><p>细粒度授权也叫数据范围授权，即不同的用户所拥有的操作权限相同，但是能够操作的数据范围是不一样的。一个例子：用户A和用户B都是教学机构，他们都拥有“我的课程”权限，但是两个用户所查询到的数据是不一样的。</p><p>本项目有哪些细粒度授权？</p><p><strong>比如：</strong></p><ul><li><p>我的课程，教学机构只允许查询本教学机构下的课程信息。</p></li><li><p>我的选课，学生只允许查询自己所选课。</p></li></ul><p><strong>如何实现细粒度授权？</strong></p><p>细粒度授权涉及到不同的业务逻辑，通常在service层实现，根据不同的用户进行校验，根据不同的参数查询不同的数据或操作不同的数据。</p><h4 id="_5-6-2-教学机构细粒度授权" tabindex="-1"><a class="header-anchor" href="#_5-6-2-教学机构细粒度授权"><span>5.6.2 教学机构细粒度授权</span></a></h4><p>教学机构在维护课程时只允许维护本机构的课程，教学机构细粒度授权过程如下：</p><p>获取当前登录的用户身份-&gt;得到用户所属教育机构的Id-&gt;查询该教学机构下的课程信息</p><p>最终实现了用户只允许查询自己机构的课程信息。</p><p>根据公司Id查询课程，流程如下：</p><ul><li><p>a）教学机构用户登录系统，从用户身份中取出所属机构的id，在用户表中设计了company_id字段存储该用户所属的机构id.</p></li><li><p>b）接口层取出当前登录用户的身份，取出机构id</p></li><li><p>c）将机构id传入service方法。</p></li><li><p>d）service方法将机构id传入Dao方法，最终查询出本机构的课程信息。</p></li></ul><p>代码实现如下：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@ApiOperation(&quot;课程查询接口&quot;)
+@PreAuthorize(&quot;hasAuthority(&#39;xc_teachmanager_course_list&#39;)&quot;)//拥有课程列表查询的权限方可访问
+@PostMapping(&quot;/course/list&quot;)
+public PageResult&lt;CourseBase&gt; list(PageParams pageParams, @RequestBody QueryCourseParamsDto queryCourseParams){
+    //取出用户身份
+    XcUser user = SecurityUtil.getUser();
+    //机构id
+    String companyId = user.getCompanyId();
+    return courseBaseInfoService.queryCourseBaseList(Long.parseLong(companyId),pageParams,queryCourseParams);
+}
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p>Service方法如下：</p><div class="language-Java line-numbers-mode" data-ext="Java" data-title="Java"><pre class="language-Java"><code>@Override
+public PageResult&lt;CourseBase&gt; queryCourseBaseList(Long companyId,PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
+
+ //构建查询条件对象
+ LambdaQueryWrapper&lt;CourseBase&gt; queryWrapper = new LambdaQueryWrapper&lt;&gt;();
+ //机构id
+ queryWrapper.eq(CourseBase::getCompanyId,companyId);
+ ....
+</code></pre><div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div></div><!----><footer class="vp-page-meta"><div class="vp-meta-item edit-link"><a class="vp-link vp-external-link-icon vp-meta-label" href="https://github.com/weiruyi/edit/main/src/posts/old存档/springboot/12_springsecurity2.md" rel="noopener noreferrer" target="_blank" aria-label="在 GitHub 上编辑此页"><!--[--><svg xmlns="http://www.w3.org/2000/svg" class="icon edit-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="edit icon" name="edit"><path d="M430.818 653.65a60.46 60.46 0 0 1-50.96-93.281l71.69-114.012 7.773-10.365L816.038 80.138A60.46 60.46 0 0 1 859.225 62a60.46 60.46 0 0 1 43.186 18.138l43.186 43.186a60.46 60.46 0 0 1 0 86.373L588.879 565.55l-8.637 8.637-117.466 68.234a60.46 60.46 0 0 1-31.958 11.229z"></path><path d="M728.802 962H252.891A190.883 190.883 0 0 1 62.008 771.98V296.934a190.883 190.883 0 0 1 190.883-192.61h267.754a60.46 60.46 0 0 1 0 120.92H252.891a69.962 69.962 0 0 0-69.098 69.099V771.98a69.962 69.962 0 0 0 69.098 69.098h475.911A69.962 69.962 0 0 0 797.9 771.98V503.363a60.46 60.46 0 1 1 120.922 0V771.98A190.883 190.883 0 0 1 728.802 962z"></path></svg><!--]-->在 GitHub 上编辑此页<!----></a></div><div class="vp-meta-item git-info"><div class="update-time"><span class="vp-meta-label">上次编辑于: </span><!----></div><div class="contributors"><span class="vp-meta-label">贡献者: </span><!--[--><!--[--><span class="vp-meta-info" title="email: 1581778251@qq.com">weiruyi</span><!--]--><!--]--></div></div></footer><nav class="vp-page-nav"><a class="route-link vp-link prev" href="/posts/old%E5%AD%98%E6%A1%A3/springboot/11_springsecurity.html" aria-label="SpringSecurity"><div class="hint"><span class="arrow start"></span>上一页</div><div class="link"><img class="icon" src="/img/spring-security.svg" alt aria-hidden no-view style="">SpringSecurity</div></a><!----></nav><div id="vp-comment" class="waline-wrapper" darkmode="false" style="display:block;"><div data-waline provider="Waline"><!--v-if--><div class="wl-comment"><!--v-if--><div class="wl-panel"><div class="wl-header item3"><!--[--><div class="wl-header-item"><label for="wl-nick">昵称</label><input id="wl-nick" class="wl-input wl-nick" name="nick" type="text" value></div><div class="wl-header-item"><label for="wl-mail">邮箱</label><input id="wl-mail" class="wl-input wl-mail" name="mail" type="email" value></div><div class="wl-header-item"><label for="wl-link">网址</label><input id="wl-link" class="wl-input wl-link" name="link" type="text" value></div><!--]--></div><textarea id="wl-edit" class="wl-editor" placeholder="请留言。(填写邮箱可在被回复时收到邮件提醒)"></textarea><div class="wl-preview" style="display:none;"><hr><h4>预览:</h4><div class="wl-content"></div></div><div class="wl-footer"><div class="wl-actions"><a href="https://guides.github.com/features/mastering-markdown/" title="Markdown Guide" aria-label="Markdown is supported" class="wl-action" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" ariaHidden="true"><path d="M14.85 3H1.15C.52 3 0 3.52 0 4.15v7.69C0 12.48.52 13 1.15 13h13.69c.64 0 1.15-.52 1.15-1.15v-7.7C16 3.52 15.48 3 14.85 3zM9 11H7V8L5.5 9.92 4 8v3H2V5h2l1.5 2L7 5h2v6zm2.99.5L9.5 8H11V5h2v3h1.5l-2.51 3.5z" fill="currentColor"></path></svg></a><button type="button" class="wl-action" title="表情" style="display:none;"><svg viewBox="0 0 1024 1024" width="24" height="24"><path d="M563.2 463.3 677 540c1.7 1.2 3.7 1.8 5.8 1.8.7 0 1.4-.1 2-.2 2.7-.5 5.1-2.1 6.6-4.4l25.3-37.8c1.5-2.3 2.1-5.1 1.6-7.8s-2.1-5.1-4.4-6.6l-73.6-49.1 73.6-49.1c2.3-1.5 3.9-3.9 4.4-6.6.5-2.7 0-5.5-1.6-7.8l-25.3-37.8a10.1 10.1 0 0 0-6.6-4.4c-.7-.1-1.3-.2-2-.2-2.1 0-4.1.6-5.8 1.8l-113.8 76.6c-9.2 6.2-14.7 16.4-14.7 27.5.1 11 5.5 21.3 14.7 27.4zM387 348.8h-45.5c-5.7 0-10.4 4.7-10.4 10.4v153.3c0 5.7 4.7 10.4 10.4 10.4H387c5.7 0 10.4-4.7 10.4-10.4V359.2c0-5.7-4.7-10.4-10.4-10.4zm333.8 241.3-41-20a10.3 10.3 0 0 0-8.1-.5c-2.6.9-4.8 2.9-5.9 5.4-30.1 64.9-93.1 109.1-164.4 115.2-5.7.5-9.9 5.5-9.5 11.2l3.9 45.5c.5 5.3 5 9.5 10.3 9.5h.9c94.8-8 178.5-66.5 218.6-152.7 2.4-5 .3-11.2-4.8-13.6zm186-186.1c-11.9-42-30.5-81.4-55.2-117.1-24.1-34.9-53.5-65.6-87.5-91.2-33.9-25.6-71.5-45.5-111.6-59.2-41.2-14-84.1-21.1-127.8-21.1h-1.2c-75.4 0-148.8 21.4-212.5 61.7-63.7 40.3-114.3 97.6-146.5 165.8-32.2 68.1-44.3 143.6-35.1 218.4 9.3 74.8 39.4 145 87.3 203.3.1.2.3.3.4.5l36.2 38.4c1.1 1.2 2.5 2.1 3.9 2.6 73.3 66.7 168.2 103.5 267.5 103.5 73.3 0 145.2-20.3 207.7-58.7 37.3-22.9 70.3-51.5 98.1-85 27.1-32.7 48.7-69.5 64.2-109.1 15.5-39.7 24.4-81.3 26.6-123.8 2.4-43.6-2.5-87-14.5-129zm-60.5 181.1c-8.3 37-22.8 72-43 104-19.7 31.1-44.3 58.6-73.1 81.7-28.8 23.1-61 41-95.7 53.4-35.6 12.7-72.9 19.1-110.9 19.1-82.6 0-161.7-30.6-222.8-86.2l-34.1-35.8c-23.9-29.3-42.4-62.2-55.1-97.7-12.4-34.7-18.8-71-19.2-107.9-.4-36.9 5.4-73.3 17.1-108.2 12-35.8 30-69.2 53.4-99.1 31.7-40.4 71.1-72 117.2-94.1 44.5-21.3 94-32.6 143.4-32.6 49.3 0 97 10.8 141.8 32 34.3 16.3 65.3 38.1 92 64.8 26.1 26 47.5 56 63.6 89.2 16.2 33.2 26.6 68.5 31 105.1 4.6 37.5 2.7 75.3-5.6 112.3z" fill="currentColor"></path></svg></button><button type="button" class="wl-action" title="表情包"><svg width="24" height="24" fill="currentcolor" viewBox="0 0 24 24"><path style="transform: translateY(0.5px)" d="M18.968 10.5H15.968V11.484H17.984V12.984H15.968V15H14.468V9H18.968V10.5V10.5ZM8.984 9C9.26533 9 9.49967 9.09367 9.687 9.281C9.87433 9.46833 9.968 9.70267 9.968 9.984V10.5H6.499V13.5H8.468V12H9.968V14.016C9.968 14.2973 9.87433 14.5317 9.687 14.719C9.49967 14.9063 9.26533 15 8.984 15H5.984C5.70267 15 5.46833 14.9063 5.281 14.719C5.09367 14.5317 5 14.2973 5 14.016V9.985C5 9.70367 5.09367 9.46933 5.281 9.282C5.46833 9.09467 5.70267 9.001 5.984 9.001H8.984V9ZM11.468 9H12.968V15H11.468V9V9Z"></path><path d="M18.5 3H5.75C3.6875 3 2 4.6875 2 6.75V18C2 20.0625 3.6875 21.75 5.75 21.75H18.5C20.5625 21.75 22.25 20.0625 22.25 18V6.75C22.25 4.6875 20.5625 3 18.5 3ZM20.75 18C20.75 19.2375 19.7375 20.25 18.5 20.25H5.75C4.5125 20.25 3.5 19.2375 3.5 18V6.75C3.5 5.5125 4.5125 4.5 5.75 4.5H18.5C19.7375 4.5 20.75 5.5125 20.75 6.75V18Z"></path></svg></button><input id="wl-image-upload" class="upload" type="file" accept=".png,.jpg,.jpeg,.webp,.bmp,.gif"><label for="wl-image-upload" class="wl-action" title="上传图片"><svg viewBox="0 0 1024 1024" width="24" height="24"><path d="M784 112H240c-88 0-160 72-160 160v480c0 88 72 160 160 160h544c88 0 160-72 160-160V272c0-88-72-160-160-160zm96 640c0 52.8-43.2 96-96 96H240c-52.8 0-96-43.2-96-96V272c0-52.8 43.2-96 96-96h544c52.8 0 96 43.2 96 96v480z" fill="currentColor"></path><path d="M352 480c52.8 0 96-43.2 96-96s-43.2-96-96-96-96 43.2-96 96 43.2 96 96 96zm0-128c17.6 0 32 14.4 32 32s-14.4 32-32 32-32-14.4-32-32 14.4-32 32-32zm462.4 379.2-3.2-3.2-177.6-177.6c-25.6-25.6-65.6-25.6-91.2 0l-80 80-36.8-36.8c-25.6-25.6-65.6-25.6-91.2 0L200 728c-4.8 6.4-8 14.4-8 24 0 17.6 14.4 32 32 32 9.6 0 16-3.2 22.4-9.6L380.8 640l134.4 134.4c6.4 6.4 14.4 9.6 24 9.6 17.6 0 32-14.4 32-32 0-9.6-4.8-17.6-9.6-24l-52.8-52.8 80-80L769.6 776c6.4 4.8 12.8 8 20.8 8 17.6 0 32-14.4 32-32 0-8-3.2-16-8-20.8z" fill="currentColor"></path></svg></label><button type="button" class="wl-action" title="预览"><svg viewBox="0 0 1024 1024" width="24" height="24"><path d="M710.816 654.301c70.323-96.639 61.084-230.578-23.705-314.843-46.098-46.098-107.183-71.109-172.28-71.109-65.008 0-126.092 25.444-172.28 71.109-45.227 46.098-70.756 107.183-70.756 172.106 0 64.923 25.444 126.007 71.194 172.106 46.099 46.098 107.184 71.109 172.28 71.109 51.414 0 100.648-16.212 142.824-47.404l126.53 126.006c7.058 7.06 16.297 10.979 26.406 10.979 10.105 0 19.343-3.919 26.402-10.979 14.467-14.467 14.467-38.172 0-52.723L710.816 654.301zm-315.107-23.265c-65.88-65.88-65.88-172.54 0-238.42 32.069-32.07 74.245-49.149 119.471-49.149 45.227 0 87.407 17.603 119.472 49.149 65.88 65.879 65.88 172.539 0 238.42-63.612 63.178-175.242 63.178-238.943 0zm0 0" fill="currentColor"></path><path d="M703.319 121.603H321.03c-109.8 0-199.469 89.146-199.469 199.38v382.034c0 109.796 89.236 199.38 199.469 199.38h207.397c20.653 0 37.384-16.645 37.384-37.299 0-20.649-16.731-37.296-37.384-37.296H321.03c-68.582 0-124.352-55.77-124.352-124.267V321.421c0-68.496 55.77-124.267 124.352-124.267h382.289c68.582 0 124.352 55.771 124.352 124.267V524.72c0 20.654 16.736 37.299 37.385 37.299 20.654 0 37.384-16.645 37.384-37.299V320.549c-.085-109.8-89.321-198.946-199.121-198.946zm0 0" fill="currentColor"></path></svg></button></div><div class="wl-info"><div class="wl-captcha-container"></div><div class="wl-text-number">0 <!--v-if-->  字</div><button type="button" class="wl-btn">登录</button><button type="submit" class="primary wl-btn" title="Cmd|Ctrl + Enter"><!--[-->提交<!--]--></button></div><div class="wl-gif-popup"><input type="text" placeholder="搜索表情包"><!--v-if--><div class="wl-loading"><svg width="30" height="30" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" fill="none" stroke="currentColor" strokeWidth="4" r="40" stroke-dasharray="85 30"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform></circle></svg></div></div><div class="wl-emoji-popup"><!--[--><!--]--><!--v-if--></div></div></div><!--v-if--></div><div class="wl-meta-head"><div class="wl-count"><!--v-if--> 评论</div><ul class="wl-sort"><!--[--><li class="active">按正序</li><li class="">按倒序</li><li class="">按热度</li><!--]--></ul></div><div class="wl-cards"><!--[--><!--]--></div><div class="wl-loading"><svg width="30" height="30" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" fill="none" stroke="currentColor" strokeWidth="4" r="40" stroke-dasharray="85 30"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform></circle></svg></div><div class="wl-power"> Powered by <a href="https://github.com/walinejs/waline" target="_blank" rel="noopener noreferrer"> Waline </a> v3.2.0</div></div></div><!----><!--]--></main><!--]--><footer class="vp-footer-wrapper"><div class="vp-footer">默认页脚</div><div class="vp-copyright">Copyright © 2026 RuyiWei </div></footer></div><!--]--><!--[--><!----><!--]--><!--]--></div>
+    <script type="module" src="/assets/app-CwUAqAGx.js" defer></script>
+  </body>
+</html>
