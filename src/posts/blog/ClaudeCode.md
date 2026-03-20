@@ -3,8 +3,6 @@ title: Claude Code 使用指南
 date: 2026-03-20
 tags: AI
 category: 工具
-star: true
-sticky: true
 description: Claude Code 的使用指南，一款强大的 AI 编程助手
 ---
 
