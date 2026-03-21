@@ -134,83 +134,154 @@ You are in /path/to/your/project
 
 ## 四、核心功能详解
 
-### 1、! 指令 - 直接执行终端命令
+### 1、/btw — 不污染上下文的旁问
 
-```shell
-!ls -la                    # 查看目录
-!git status                # Git 状态
-!npm install               # 安装依赖
-!cat src/main.js           # 查看文件
-!mkdir temp                # 创建目录
-```
+`/btw` 允许你在不影响当前对话上下文的情况下，快速问一个"顺带一提"的问题。回答是临时性的（不计入上下文），且复用 prompt 缓存，成本极低。
 
-::: tip 为什么用 ! 指令？
-- **更快** - 直接执行，不经过 AI 思考
-- **更直接** - 就是普通的终端命令
-- **可预期** - 你知道会发生什么
+::: tip 适用场景
+正在让 Claude 重构某个模块，突然想确认一个库的 API 用法，又不想打断当前任务 → 用 `/btw` 问，看完按 `Space` / `Enter` / `Esc` 关闭即可。
 :::
 
-### 2、@ 语法 - 指定文件操作
-
-```shell
-@src/main.js                    # 查看文件
-@src/utils.js 删除 console.log  # 修改文件
-@src/A.js @src/B.js 对比差异    # 多文件操作
+```
+/btw Python 的 walrus operator := 是什么意思？
 ```
 
-::: tip @ 语法的优势
-1. **明确上下文** - 告诉 Claude 你在说哪个文件
-2. **减少误解** - 避免 Claude 找错文件
-3. **提高效率** - 不需要每次都用文字描述文件路径
-:::
+### 2、/rewind — 撤销代码改动
 
-### 3、Slash 命令
+`/rewind` 可以将对话回滚到之前的某个节点，支持**选择性回滚**：
 
-| 命令 | 说明 |
+| 选项 | 效果 |
 |------|------|
-| `/help` | 查看帮助 |
-| `/clear` | 清除上下文 |
-| `/commit` | 提交代码 |
-| `/test` | 运行测试 |
-| `/build` | 构建项目 |
-| `/model` | 切换模型 |
-| `/config` | 查看配置 |
-| `/exit` | 退出 |
+| 仅回滚代码 | 撤销所有文件改动，保留对话历史 |
+| 同时回滚对话 | 文件改动和对话历史都还原 |
 
-::: details 常用命令详解
-
-#### `/commit` - 提交代码
-```shell
-/commit                    # 自动生成提交信息
-/commit "添加登录功能"     # 指定提交信息
-```
-
-#### `/model` - 切换模型
-```shell
-/model sonnet    # 日常使用（推荐）
-/model opus      # 复杂任务
-/model haiku     # 简单任务
-```
-
+::: warning 注意
+只能撤销 Claude 的文件操作，手动编辑和外部网络请求（API 调用、数据库写入）无法回滚。
 :::
 
-### 4、自然语言对话
+快捷方式：按两次 `Esc` 打开回滚菜单，比输入 `/rewind` 更快。
 
-#### 文件操作
+### 3、/insights — 使用习惯分析报告
+
+分析过去 30 天的本地会话记录，生成交互式 HTML 报告，保存到 `~/.claude/usage-data/report.html`。
+
+报告内容包括：
+- 工具使用统计图表
+- 各项目的会话数据
+- Prompt 模式和纠错频率分析
+- 摩擦点分析（基于真实会话）
+- 自动生成 CLAUDE.md 配置建议
+
+::: note
+所有数据均在本地处理，不会上传。建议每月运行一次。
+:::
+
+### 4、/model — 切换模型
+
+在会话中途切换 AI 模型，无需重启：
 
 ```shell
-"查看 src/main.js 的前 30 行"
-"把 src/utils.js 中的 formatDate 改成异步的"
-"找一下项目中所有包含 TODO 的文件"
+/model sonnet    # 切换到 Sonnet（节省用量）
+/model opus      # 切换到 Opus（最强能力）
+/model haiku     # 切换到 Haiku（速度最快）
 ```
 
-#### 代码操作
+快捷键：`Option+P`（macOS）打开模型选择器，不会清除已输入内容。
+
+### 5、/simplify — 代码质量优化
+
+代码实现完成后，运行 `/simplify` 对改动过的文件进行自动审查和优化：
+
+- 移除未使用的 import
+- 消除冗余变量
+- 提取可复用逻辑
+- 简化过于复杂的条件判断
+
+::: tip 推荐工作流
+写完功能 → 跑一下测试 → 运行 `/simplify` 清理代码
+:::
+
+### 6、/fork — 对话分支
+
+`/fork` 类似 git 分支，为当前对话创建一个分叉，方便在不破坏主线的情况下尝试不同方案：
 
 ```shell
-"解释一下这个函数"
-"给这个组件添加 hover 效果"
-"修复这个 bug：TypeError: Cannot read 'map' of undefined"
+/fork    # 从当前节点创建对话分支
+/resume  # 返回到分支前的主对话
 ```
+
+### 7、/loop — 周期性执行任务
+
+以固定时间间隔循环运行某个 prompt 或命令：
+
+```shell
+/loop 5m /review        # 每 5 分钟执行一次代码审查
+/loop 10m 检查测试状态   # 默认间隔 10 分钟
+```
+
+适合：持续监控构建状态、定期代码审查、轮询某个外部任务。
+
+### 8、/remote-control — 远程控制
+
+将本地 Claude Code 会话转为可从 Claude 移动端或 `claude.ai/code` 远程访问的会话。
+
+::: tip 工作原理
+本地 Claude Code 发起出站 HTTPS 请求，**不开放任何入站端口**。文件和 MCP 服务器始终留在本地，只有对话消息和工具结果通过加密通道传输。
+:::
+
+| 方式 | 说明 |
+|------|------|
+| `/rc` | 将**已有会话**转为远程（保留历史） |
+| `claude rc` | 在终端启动**新**远程会话 |
+
+::: warning 限制
+- 每次只能有一个远程会话，终端窗口必须保持打开
+- 网络超时 10 分钟
+- 仅 Pro 和 Max 计划可用
+:::
+
+### 9、/export — 导出对话
+
+将当前会话内容导出为纯文本文件，方便留档、复盘或分享：
+
+```shell
+/export                    # 导出到剪贴板
+/export session-notes.txt  # 导出到指定文件
+```
+
+### 10、@ 引用指定文件
+
+在 prompt 中用 `@` 前缀直接引用文件，Claude 会自动读取：
+
+```shell
+# 引用单个文件
+@src/utils.ts 给这个文件加上错误处理
+
+# 同时引用多个文件
+@src/utils.ts 参考 @src/helpers.ts 的风格重构一下
+
+# 引用截图（支持图片文件）
+这个报错怎么解决？@screenshot.png
+```
+
+::: tip
+输入 `@` 后支持 Tab 补全文件路径，比直接粘贴文件内容更高效。
+:::
+
+### 11、快捷键汇总
+
+| 快捷键 | 说明 |
+|--------|------|
+| `Ctrl+V` | 粘贴截图（macOS 也是 Ctrl，不是 Command） |
+| `Ctrl+J` / `Option+回车` | 换行（不提交） |
+| `Ctrl+R` | 搜索历史 Prompt（类似 bash 的 Ctrl+R） |
+| `Ctrl+U` | 删除整行输入 |
+| `Ctrl+G` | 用外部编辑器（`$EDITOR`）编写多行 Prompt |
+| `Ctrl+B` | 将当前 bash 命令移到后台 |
+| `Esc Esc`（连按两次） | 打开 /rewind 回滚菜单 |
+| `Option+P` | 打开模型选择器 |
+| `Option+T` | 切换扩展思考模式 |
+| `Tab` | 切换思考模式 |
 
 ## 五、高级功能 - MCP (Model Context Protocol)
 
@@ -526,6 +597,41 @@ description: 我的自定义 Skill
 使用方式：
 /my-skill 参数
 ```
+
+### 6、使用 npx 安装 Skills
+
+通过 `npx skills` CLI 可以从任意 GitHub 仓库安装 Skills：
+
+```shell
+# 安装指定 skill
+npx skills add vercel-labs/agent-skills --skill frontend-design -a claude-code
+
+# 查看仓库中所有可用 skills
+npx skills add vercel-labs/agent-skills --list
+
+# 一次安装多个 skills
+npx skills add vercel-labs/agent-skills --skill review --skill simplify -a claude-code
+
+# 非交互式安装（CI 环境）
+npx skills add vercel-labs/agent-skills --skill frontend-design -g -a claude-code -y
+```
+
+| 命令 | 说明 |
+|------|------|
+| `npx skills list` | 查看已安装的 skills |
+| `npx skills find <关键词>` | 按关键词搜索 skill |
+| `npx skills check` | 检查是否有更新 |
+| `npx skills update` | 更新所有已安装的 skills |
+
+::: tip 参数说明
+- `-a claude-code`：指定安装到 Claude Code（也支持 Cursor、Copilot 等）
+- `-g`：全局安装（不加则安装到当前项目 `.claude/skills/`）
+- `-y`：跳过确认提示
+:::
+
+::: note 寻找 Skills
+可以在 [https://skills.sh/](https://skills.sh/) 网站浏览社区分享的 Skills，也可以直接从 GitHub 仓库安装。
+:::
 
 ## 七、权限配置
 
