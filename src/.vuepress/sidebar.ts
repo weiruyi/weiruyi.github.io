@@ -21,8 +21,12 @@ export default sidebar({
       text: "Docker",
       icon: "/img/docker.svg",
       link: "Docker"
+    },
+    {
+      text: "Tmux",
+      icon: "/img/tmux.svg",
+      link: "Tmux"
     }
-    
   ],
   "/posts/old存档/": [
     {

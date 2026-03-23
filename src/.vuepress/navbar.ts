@@ -72,8 +72,12 @@ export default navbar([
             text: "Docker",
             icon: "/img/docker.svg",
             link: "Docker"
+          },
+          {
+            text: "Tmux",
+            icon: "/img/tmux.svg",
+            link: "Tmux"
           }
-       
         ]
       }
     ]);
