@@ -8,7 +8,6 @@ description: Claude Code 的使用指南，一款强大的 AI 编程助手
 
 # Claude Code 使用指南
 
-<!-- more -->
 
 ## 一、Claude Code 介绍
 
@@ -23,6 +22,8 @@ Claude Code 是 Anthropic 官方推出的 CLI 编程助手，通过自然语言�
 4. **文档生成** - 自动生成代码注释和文档
 5. **测试编写** - 为现有代码生成测试用例
 :::
+
+<!-- more -->
 
 ## 二、安装与配置
 

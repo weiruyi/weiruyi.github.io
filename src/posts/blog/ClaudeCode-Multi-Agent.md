@@ -8,13 +8,14 @@ description: 深入讲解 Claude Code 的两种多智能体模式：Subagents �
 
 # Claude Code 多智能体实战指南：从 Subagents 到 Agent Teams
 
-<!-- more -->
 
 ## 一、引言
 
 ::: tip 背景
 2026 年初，Anthropic 正式推出了 Claude Code Agent Teams（Swarm Mode），与 Claude Opus 4.6 和 Sonnet 5 一同发布。这标志着 AI 辅助编程从"单一智能体"向"智能体团队"的范式转变。
 :::
+
+<!-- more -->
 
 ### 1.1 为什么需要多智能体？
 
