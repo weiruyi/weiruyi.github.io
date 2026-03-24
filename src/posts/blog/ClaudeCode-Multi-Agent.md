@@ -1,5 +1,5 @@
 ---
-title: Claude Code 多智能体实战指南：从 Subagents 到 Agent Teams
+title: Claude Code 多智能体实战
 date: 2026-03-23
 tags: AI
 category: AI
