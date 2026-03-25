@@ -4,6 +4,7 @@ date: 2026-03-20
 tags: AI
 category: 工具
 description: Claude Code 的使用指南，一款强大的 AI 编程助手
+order: 2
 ---
 
 # Claude Code 使用指南

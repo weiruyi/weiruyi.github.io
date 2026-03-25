@@ -3,6 +3,7 @@ title: 持久运行Agent的高效管控方案
 date: 2026-03-24
 tags: [AI, Agent, Claude, 工程实践]
 category: AI
+order: 4
 description: 深入解析 Anthropic 2025 年 11 月发布的长运行 Agent 框架设计，从 claude.ai 克隆项目看如何构建可持续工作数天的智能体
 ---
 

@@ -4,6 +4,7 @@ date: 2026-03-23
 tags: AI
 category: AI
 description: 深入讲解 Claude Code 的两种多智能体模式：Subagents 和 Agent Teams，包含实战场景和最佳实践
+order: 3
 ---
 
 # Claude Code 多智能体实战指南：从 Subagents 到 Agent Teams
