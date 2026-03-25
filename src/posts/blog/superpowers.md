@@ -14,6 +14,7 @@ description: Superpowers 是一个为 AI 编程助手设计的技能框架，提
 ::: tip 什么是 Superpowers
 Superpowers 是一个完整的 AI 编程助手技能框架，基于可组合的"技能"构建，为 Claude Code、Cursor、Codex、OpenCode、Gemini CLI 等 AI 编程助手提供系统化的软件开发工作流。
 :::
+<!-- more -->
 
 ::: info 核心设计理念
 Superpowers 的核心理念是让 AI 编程助手从"直接写代码"转变为"系统化思考后再行动"：
@@ -36,7 +37,7 @@ Superpowers 的核心理念是让 AI 编程助手从"直接写代码"转变为"�
 | OpenCode | 手动配置 |
 | Gemini CLI | 扩展安装 |
 
-<!-- more -->
+
 
 ## 二、安装指南
 
