@@ -10,9 +10,14 @@ order: 1
 
 ## AI Tools
 
-### MCP (Model Context Protocol)
+### MCP
 
 - **chrome-devtools-mcp** - [GitHub](https://github.com/ChromeDevTools/chrome-devtools-mcp) - 让AI助手能够通过Chrome DevTools Protocol控制浏览器，进行网页自动化和调试
+
+### Claude Code 插件
+
+- **superpowers** - [GitHub](https://github.com/obra/superpowers) - 一个为 Claude Code 提供强大功能扩展和代理技能框架的开源项目。
+- **oh-my-claudecode** - [GitHub](https://github.com/Yeachan-Heo/oh-my-claudecode) - 面向团队的 Claude Code 多代理编排工具（灵感来自 oh-my-opencode）。
 
 
 

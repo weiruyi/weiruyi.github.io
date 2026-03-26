@@ -212,7 +212,21 @@ You are in /path/to/your/project
 /resume  # 返回到分支前的主对话
 ```
 
-### 7、/loop — 周期性执行任务
+### 7、/branch — 分支管理（新版）
+
+`/branch` 用于创建和切换会话分支，适合并行尝试多个方案，再回到主线继续工作。
+
+```shell
+/branch                   # 打开分支面板（查看/切换/创建）
+/branch new ui-redesign   # 创建名为 ui-redesign 的分支
+/branch main              # 切回主分支
+```
+
+:::: tip 兼容说明
+部分版本仍以 `/fork` 作为入口；如果你的版本里没有 `/branch`，可继续使用 `/fork` + `/resume` 实现类似效果。
+::::
+
+### 8、/loop — 周期性执行任务
 
 以固定时间间隔循环运行某个 prompt 或命令：
 
@@ -223,7 +237,7 @@ You are in /path/to/your/project
 
 适合：持续监控构建状态、定期代码审查、轮询某个外部任务。
 
-### 8、/remote-control — 远程控制
+### 9、/remote-control — 远程控制
 
 将本地 Claude Code 会话转为可从 Claude 移动端或 `claude.ai/code` 远程访问的会话。
 
@@ -242,7 +256,7 @@ You are in /path/to/your/project
 - 仅 Pro 和 Max 计划可用
 :::
 
-### 9、/export — 导出对话
+### 10、/export — 导出对话
 
 将当前会话内容导出为纯文本文件，方便留档、复盘或分享：
 
@@ -251,7 +265,7 @@ You are in /path/to/your/project
 /export session-notes.txt  # 导出到指定文件
 ```
 
-### 10、@ 引用指定文件
+### 11、@ 引用指定文件
 
 在 prompt 中用 `@` 前缀直接引用文件，Claude 会自动读取：
 
@@ -270,7 +284,7 @@ You are in /path/to/your/project
 输入 `@` 后支持 Tab 补全文件路径，比直接粘贴文件内容更高效。
 :::
 
-### 11、快捷键汇总
+### 12、快捷键汇总
 
 | 快捷键 | 说明 |
 |--------|------|
