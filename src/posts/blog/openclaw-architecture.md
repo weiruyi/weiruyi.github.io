@@ -56,28 +56,28 @@ graph TD
     W[WhatsApp]
   end
 
-  subgraph 渠道层 Channels
-    CT[Telegram Channel]
-    CS[Slack Channel]
-    CD[Discord Channel]
-    CW[WhatsApp Channel]
+  subgraph 渠道层
+    CT[Telegram 通道]
+    CS[Slack 通道]
+    CD[Discord 通道]
+    CW[WhatsApp 通道]
   end
 
-  subgraph 控制平面 Gateway
-    G((Gateway<br/>WebSocket + HTTP API))
-    GR[路由器 Router]
-    GSEC[安全策略 Security]
+  subgraph 控制平面
+    G((Gateway 控制平面))
+    GR[路由器]
+    GSEC[安全策略]
   end
 
-  subgraph 智能体层 Agents
-    A1[Agent "Coder"]
-    A2[Agent "Ops"]
-    A3[Agent "Assistant"]
+  subgraph 智能体层
+    A1[Coder Agent]
+    A2[Ops Agent]
+    A3[Assistant Agent]
   end
 
   subgraph 能力与记忆层
-    SK[Skills & Tools]
-    M[Memory<br/>日志 + 向量库]
+    SK[Skills 与工具]
+    M[Memory 记忆系统]
   end
 
   T <--> CT
