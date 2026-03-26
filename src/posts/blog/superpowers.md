@@ -1,5 +1,5 @@
 ---
-title: Superpowers编程skills介绍
+title: Superpowers编程插件
 date: 2026-03-25
 tags: AI
 category: 工具

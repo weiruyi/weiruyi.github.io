@@ -1,5 +1,5 @@
 ---
-title: oh-my-claudecode 指南
+title: oh-my-claudecode 插件
 subtitle: 从入门到精通的 AI 辅助编程技能手册
 date: 2026-03-25
 tags:
